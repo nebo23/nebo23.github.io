@@ -1316,24 +1316,189 @@
     }
 
     /* ════════════════════════════════════════════════════════
-       RESPONSIVE
+       RESPONSIVE — PC LARGE (1280px+)
     ════════════════════════════════════════════ */
-    @media (max-width: 680px) {
-      .offer-items, .offer-box-header, .offer-footer { padding-left: 20px; padding-right: 20px; }
-      .story-flex { flex-direction: column-reverse; }
-      .story-img-box { min-width: unset; width: 100%; }
-      .img-badge { position: static; margin-top: 16px; display: inline-block; }
-      .sticky-cta { flex-direction: column; text-align: center; padding: 14px 16px; }
-      .sticky-cta .btn-cta { width: 100%; }
-      .countdown-num { width: 56px; height: 56px; font-size: 1.7rem; }
-      .hero h1 { font-size: 1.65rem; }
-      .guarantee-box { padding: 36px 22px; }
-      .chapters-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+    @media (min-width: 1280px) {
+      .container { max-width: 1060px; }
+      .hero h1 { font-size: 3.2rem; }
+      .chapters-grid { grid-template-columns: repeat(4, 1fr); }
+      .video-reviews-grid { grid-template-columns: repeat(3, 1fr); }
+      .text-reviews-grid { grid-template-columns: repeat(3, 1fr); }
+      .screenshots-grid { grid-template-columns: repeat(4, 1fr); }
     }
 
-    @media (max-width: 480px) {
-      .hero-trust { gap: 12px; }
-      .text-reviews-grid { grid-template-columns: 1fr; }
+    /* ════════════════════════════════════════════════════════
+       RESPONSIVE — TABLET (768px – 1024px)
+    ════════════════════════════════════════════ */
+    @media (max-width: 1024px) and (min-width: 769px) {
+      .chapters-grid { grid-template-columns: repeat(3, 1fr); }
+      .stats-grid    { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+      .video-reviews-grid { grid-template-columns: repeat(2, 1fr); }
+      .text-reviews-grid  { grid-template-columns: repeat(2, 1fr); }
+      .screenshots-grid   { grid-template-columns: repeat(2, 1fr); }
+      .story-img-box img  { max-width: 360px; }
+    }
+
+    /* ════════════════════════════════════════════════════════
+       RESPONSIVE — MOBILE LARGE (681px – 768px)
+    ════════════════════════════════════════════ */
+    @media (max-width: 768px) and (min-width: 681px) {
+      .chapters-grid { grid-template-columns: repeat(2, 1fr); }
+      .video-reviews-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .story-flex { flex-direction: column-reverse; gap: 32px; }
+      .story-img-box { width: 100%; min-width: unset; }
+      .img-badge { position: static; margin-top: 14px; display: inline-block; }
+      .offer-items, .offer-box-header, .offer-footer { padding-left: 24px; padding-right: 24px; }
+    }
+
+    /* ════════════════════════════════════════════════════════
+       RESPONSIVE — MOBILE (max 680px)
+    ════════════════════════════════════════════ */
+    @media (max-width: 680px) {
+      /* Layout */
+      .container { padding: 0 16px; }
+      .story-flex { flex-direction: column-reverse; gap: 28px; }
+      .story-img-box { min-width: unset; width: 100%; }
+      .img-badge { position: static; margin-top: 14px; display: inline-block; }
+
+      /* Hero */
+      .hero { padding: 44px 0 38px; }
+      .hero h1 { font-size: 1.6rem; line-height: 1.3; }
+      .hero-sub { font-size: 0.92rem; margin-bottom: 24px; }
+      .pre-headline { font-size: 0.78rem; padding: 6px 14px; }
+      .hero-trust { gap: 10px; }
+      .trust-chip { font-size: 0.75rem; }
+
+      /* VSL */
+      .vsl-wrapper { border-radius: 12px; margin-bottom: 24px; }
+      .vsl-bar { font-size: 0.76rem; padding: 10px 14px; }
+      .play-ring { width: 72px; height: 72px; }
+
+      /* Stats */
+      .stats-bar { padding: 28px 0; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .stat-num { font-size: 1.7rem; }
+      .stat-label { font-size: 0.75rem; }
+
+      /* Tools */
+      .tools-stripe { padding: 32px 0; }
+      .tool-chip { font-size: 0.78rem; padding: 7px 14px; }
+
+      /* Sections */
+      .reviews-section,
+      .story-section,
+      .chapters-section,
+      .offer-section,
+      .screenshots-section,
+      .faq-section { padding: 56px 0; }
+      .guarantee-section { padding: 40px 0; }
+      .final-cta-section { padding: 64px 0; }
+
+      /* Section headers */
+      .section-title { font-size: 1.35rem; }
+      .section-sub { font-size: 0.87rem; }
+
+      /* Chapters */
+      .chapters-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-top: 32px;
+      }
+      .chapter-card { padding: 20px 14px; border-radius: 14px; }
+      .chapter-card h3 { font-size: 0.82rem; }
+      .chapter-card p  { font-size: 0.73rem; }
+      .ch-num { width: 38px; height: 38px; border-radius: 10px; font-size: 0.82rem; margin-bottom: 12px; }
+      .chapter-lessons { font-size: 0.65rem; padding: 2px 8px; }
+
+      /* Video reviews */
+      .video-reviews-grid { grid-template-columns: 1fr; gap: 16px; margin-top: 28px; }
+      .text-reviews-grid { grid-template-columns: 1fr; gap: 14px; }
+      .text-review-card { padding: 18px 16px; }
+
+      /* Offer box */
+      .offer-box { border-radius: 18px; }
+      .offer-box-header { padding: 22px 18px; }
+      .offer-box-header h2 { font-size: 1.15rem; }
+      .offer-items { padding: 0 18px; }
+      .offer-footer { padding: 24px 18px; }
+      .offer-item { flex-direction: column; align-items: flex-start; gap: 10px; padding: 16px 0; }
+      .offer-item-left { gap: 10px; }
+      .offer-icon { width: 38px; height: 38px; font-size: 1rem; }
+      .offer-item h4 { font-size: 0.85rem; }
+      .offer-item p  { font-size: 0.73rem; }
+      .offer-value { font-size: 0.82rem; }
+
+      /* Price */
+      .price-big { font-size: 3rem; }
+      .price-currency { font-size: 1rem; }
+      .total-value-row { font-size: 0.82rem; }
+
+      /* Countdown */
+      .countdown-num {
+        width: 54px; height: 54px;
+        font-size: 1.6rem;
+        border-radius: 10px;
+      }
+      .countdown-sep { font-size: 1.6rem; margin-bottom: 14px; }
+      .countdown-unit-label { font-size: 0.6rem; }
+      .countdown-block { gap: 4px; }
+
+      /* Guarantee */
+      .guarantee-box { padding: 32px 18px; border-radius: 20px; }
+      .guarantee-badge { font-size: 3.5rem; }
+      .guarantee-box h3 { font-size: 1.1rem; }
+      .guarantee-box p  { font-size: 0.84rem; }
+      .guarantee-points { gap: 16px; }
+
+      /* Screenshots */
+      .screenshots-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 28px; }
+
+      /* FAQ */
+      .faq-list { margin-top: 28px; }
+      .faq-q { padding: 16px 18px; font-size: 0.86rem; }
+      .faq-a { padding: 0 18px; font-size: 0.82rem; }
+      .faq-item.open .faq-a { padding: 0 18px 18px; }
+
+      /* CTA */
+      .btn-cta { padding: 15px 28px; font-size: 1rem; border-radius: 100px; }
+      .cta-sub-note { font-size: 0.76rem; gap: 10px; }
+
+      /* Sticky bar */
+      .sticky-cta {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        padding: 12px 14px;
+        gap: 10px;
+      }
+      .sticky-cta .btn-cta { width: 100%; font-size: 1rem; padding: 13px; animation: ctaPulse 2.5s infinite; }
+      .sticky-left strong { font-size: 0.92rem; }
+      .sticky-left span   { font-size: 0.73rem; }
+
+      /* Urgency bar */
+      .urgency-topbar { font-size: 0.8rem; padding: 9px 12px; gap: 6px; }
+      .urgency-topbar .timer-inline { font-size: 0.9rem; padding: 2px 10px; }
+
+      /* Story */
+      .story-section { padding: 52px 0; }
+      .story-body { font-size: 0.88rem; }
+      .pain-point { font-size: 0.84rem; }
+    }
+
+    /* ════════════════════════════════════════════════════════
+       RESPONSIVE — SMALL MOBILE (max 380px)
+    ════════════════════════════════════════════ */
+    @media (max-width: 380px) {
+      .hero h1 { font-size: 1.4rem; }
+      .chapters-grid { grid-template-columns: 1fr; }
+      .screenshots-grid { grid-template-columns: 1fr; }
+      .countdown-num { width: 48px; height: 48px; font-size: 1.4rem; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero-trust { flex-direction: column; gap: 8px; align-items: center; }
+      .btn-cta { font-size: 0.95rem; padding: 14px 20px; }
+      .offer-box-header h2 { font-size: 1rem; }
+      .section-title { font-size: 1.2rem; }
     }
   </style>
 </head>
