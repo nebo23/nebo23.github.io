@@ -1,2304 +1,2086 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Automation Atlas | ابنِ وكالة ذكاء اصطناعي ودخل حقيقي</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet" />
-
-  <style>
-    /* ════════════════════════════════════════════════════════
-       ROOT VARIABLES — Design Tokens
-    ════════════════════════════════════════════════════════ */
-    :root {
-      --bg:           #080810;
-      --bg-card:      #0e0e1a;
-      --bg-raised:    #13131f;
-      --bg-glass:     rgba(14,14,26,0.75);
-      --indigo:       #4F46E5;
-      --indigo-light: #6366f1;
-      --indigo-glow:  rgba(79,70,229,0.4);
-      --indigo-subtle:rgba(79,70,229,0.07);
-      --green:        #10B981;
-      --green-glow:   rgba(16,185,129,0.35);
-      --red:          #ef4444;
-      --red-glow:     rgba(239,68,68,0.3);
-      --gold:         #FBBF24;
-      --gold-glow:    rgba(251,191,36,0.25);
-      --white:        #f1f2f6;
-      --muted:        #5a6070;
-      --muted-light:  #8892a0;
-      --border:       rgba(255,255,255,0.065);
-      --border-blue:  rgba(79,70,229,0.3);
-      --radius:       14px;
-      --radius-lg:    22px;
-      --radius-xl:    32px;
-    }
-
-    /* ════════════════════════════════════════════════════════
-       RESET & BASE
-    ════════════════════════════════════════════════════════ */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Cairo', sans-serif;
-      background: var(--bg);
-      color: var(--white);
-      direction: rtl;
-      overflow-x: hidden;
-      line-height: 1.7;
-    }
-
-    /* ─── Background noise texture ─── */
-    body::before {
-      content: '';
-      position: fixed; inset: 0; z-index: 0;
-      background-image:
-        linear-gradient(rgba(79,70,229,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(79,70,229,0.025) 1px, transparent 1px);
-      background-size: 48px 48px;
-      pointer-events: none;
-    }
-
-    /* ─── Ambient glow orbs ─── */
-    body::after {
-      content: '';
-      position: fixed; inset: 0; z-index: 0;
-      background:
-        radial-gradient(ellipse 60% 40% at 10% 20%, rgba(79,70,229,0.08) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 30% at 90% 70%, rgba(16,185,129,0.05) 0%, transparent 60%);
-      pointer-events: none;
-    }
-
-    section, header, footer, .full-stripe {
-      position: relative; z-index: 1;
-    }
-
-    .container {
-      max-width: 940px;
-      margin: 0 auto;
-      padding: 0 22px;
-    }
-
-    img { max-width: 100%; display: block; }
-    a { color: inherit; text-decoration: none; }
-
-    /* ════════════════════════════════════════════════════════
-       URGENCY TOP BAR
-    ════════════════════════════════════════════ */
-    .urgency-topbar {
-      background: linear-gradient(90deg, #7f1d1d 0%, #991b1b 50%, #7f1d1d 100%);
-      background-size: 200% 100%;
-      animation: gradShift 4s linear infinite;
-      text-align: center;
-      padding: 10px 16px;
-      font-size: 0.88rem;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      z-index: 100;
-      position: relative;
-    }
-
-    .urgency-topbar .timer-inline {
-      font-family: 'IBM Plex Mono', monospace;
-      background: rgba(0,0,0,0.4);
-      padding: 2px 14px;
-      border-radius: 20px;
-      color: #fca5a5;
-      font-size: 1rem;
-      letter-spacing: 2px;
-      direction: ltr;
-      border: 1px solid rgba(252,165,165,0.2);
-    }
-
-    /* ════════════════════════════════════════════════════════
-       HERO
-    ════════════════════════════════════════════ */
-    .hero {
-      padding: 64px 0 56px;
-      text-align: center;
-    }
-
-    .hero-glow {
-      position: absolute;
-      width: 700px; height: 700px;
-      background: radial-gradient(circle, rgba(79,70,229,0.14) 0%, transparent 65%);
-      top: -200px; left: 50%; transform: translateX(-50%);
-      pointer-events: none;
-    }
-
-    /* ─── Pre-headline badge ─── */
-    .pre-headline {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(239,68,68,0.1);
-      border: 1px solid rgba(239,68,68,0.35);
-      color: #fca5a5;
-      padding: 7px 20px;
-      border-radius: 100px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      margin-bottom: 26px;
-      animation: fadeInDown 0.6s ease both;
-      backdrop-filter: blur(8px);
-    }
-
-    .dot-live {
-      width: 8px; height: 8px;
-      background: var(--red);
-      border-radius: 50%;
-      flex-shrink: 0;
-      animation: blink 1.2s infinite;
-      box-shadow: 0 0 6px var(--red);
-    }
-
-    /* ─── Main headline ─── */
-    .hero h1 {
-      font-size: clamp(1.8rem, 4.5vw, 3rem);
-      font-weight: 900;
-      line-height: 1.25;
-      margin-bottom: 22px;
-      animation: fadeInUp 0.7s ease 0.15s both;
-      letter-spacing: -0.5px;
-    }
-
-    .hero h1 .blue  { color: var(--indigo-light); }
-    .hero h1 .green { color: var(--green); }
-
-    /* ─── Sub headline ─── */
-    .hero-sub {
-      font-size: clamp(0.95rem, 2.2vw, 1.15rem);
-      color: var(--muted-light);
-      max-width: 640px;
-      margin: 0 auto 38px;
-      animation: fadeInUp 0.7s ease 0.25s both;
-      line-height: 1.8;
-    }
-
-    /* ─── Trust logos row ─── */
-    .hero-trust {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-      margin-bottom: 36px;
-      animation: fadeInUp 0.7s ease 0.35s both;
-    }
-
-    .trust-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.8rem;
-      color: var(--muted-light);
-      font-weight: 600;
-    }
-
-    .trust-chip .tc-icon {
-      color: var(--green);
-      font-size: 1rem;
-    }
-
-    /* ════════════════════════════════════════════════════════
-       VSL VIDEO PLAYER
-    ════════════════════════════════════════════ */
-    .vsl-wrapper {
-      position: relative;
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      box-shadow:
-        0 0 0 1px rgba(79,70,229,0.3),
-        0 0 60px rgba(79,70,229,0.2),
-        0 30px 80px rgba(0,0,0,0.7);
-      margin: 0 auto 38px;
-      max-width: 820px;
-      animation: fadeInUp 0.8s ease 0.3s both;
-      background: #000;
-    }
-
-    .vsl-frame {
-      position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
-    }
-
-    .vsl-frame iframe {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
-      border: none;
-    }
-
-    /* ─── Thumbnail overlay ─── */
-    .vsl-thumb-overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(145deg, #0a0a16 0%, #0d0d1e 100%);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 22px;
-      cursor: pointer;
-      z-index: 5;
-    }
-
-    .vsl-bg-logo {
-      font-size: 11rem;
-      opacity: 0.035;
-      font-weight: 900;
-      position: absolute;
-      color: var(--indigo);
-      user-select: none;
-      letter-spacing: -8px;
-      font-family: 'IBM Plex Mono', monospace;
-    }
-
-    /* ─── Play button ─── */
-    .play-ring {
-      position: relative;
-      width: 90px; height: 90px;
-    }
-
-    .play-ring::before,
-    .play-ring::after {
-      content: '';
-      position: absolute; inset: 0;
-      border-radius: 50%;
-      border: 2px solid rgba(79,70,229,0.6);
-      animation: ping 2s cubic-bezier(0,0,0.2,1) infinite;
-    }
-
-    .play-ring::after {
-      animation-delay: 0.9s;
-      border-color: rgba(99,102,241,0.4);
-    }
-
-    .play-btn-inner {
-      position: absolute; inset: 0;
-      background: linear-gradient(135deg, var(--indigo) 0%, #818cf8 100%);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 40px var(--indigo-glow), 0 0 80px rgba(79,70,229,0.2);
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-
-    .play-btn-inner:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 60px var(--indigo-glow), 0 0 100px rgba(79,70,229,0.3);
-    }
-
-    .play-btn-inner svg { width: 30px; height: 30px; fill: #fff; margin-right: -4px; }
-
-    .vsl-label {
-      position: relative; z-index: 1;
-      text-align: center;
-    }
-
-    .vsl-label strong { display: block; font-size: 1.1rem; margin-bottom: 4px; }
-    .vsl-label span { font-size: 0.83rem; color: var(--muted-light); }
-
-    /* ─── VSL bottom info bar ─── */
-    .vsl-bar {
-      padding: 12px 22px;
-      background: rgba(79,70,229,0.07);
-      border-top: 1px solid rgba(79,70,229,0.18);
-      font-size: 0.83rem;
-      color: var(--muted-light);
-      text-align: center;
-    }
-
-    .vsl-bar strong { color: var(--white); }
-
-    /* ─── Progress bar (decorative) ─── */
-    .vsl-progress {
-      height: 3px;
-      background: var(--border);
-      position: relative;
-    }
-
-    .vsl-progress::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--indigo), var(--green));
-      animation: progressLoad 12s linear forwards;
-    }
-
-    /* ════════════════════════════════════════════════════════
-       CTA BUTTON
-    ════════════════════════════════════════════ */
-    .btn-cta {
-      display: inline-flex;
-      align-items: center; gap: 10px; justify-content: center;
-      background: linear-gradient(135deg, #059669 0%, var(--green) 50%, #34d399 100%);
-      background-size: 200% 100%;
-      color: #fff;
-      font-family: 'Cairo', sans-serif;
-      font-weight: 900;
-      font-size: clamp(1.05rem, 2.8vw, 1.35rem);
-      padding: 18px 46px;
-      border-radius: 100px;
-      border: none; cursor: pointer;
-      text-decoration: none;
-      box-shadow: 0 8px 40px var(--green-glow), 0 0 0 0 rgba(16,185,129,0.3);
-      animation: ctaPulse 2.5s infinite, btnGradShift 3s ease infinite;
-      transition: transform 0.25s, box-shadow 0.25s;
-      position: relative; overflow: hidden;
-      letter-spacing: 0.3px;
-    }
-
-    .btn-cta::before {
-      content: '';
-      position: absolute; top: 0; left: -100%;
-      width: 60%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
-      transform: skewX(-20deg);
-      animation: shimmer 3s infinite;
-    }
-
-    .btn-cta:hover {
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 16px 55px var(--green-glow), 0 0 0 6px rgba(16,185,129,0.08);
-      animation-play-state: paused;
-    }
-
-    .cta-sub-note {
-      font-size: 0.82rem;
-      color: var(--muted);
-      margin-top: 14px;
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .cta-sub-note .note-item {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .cta-sub-note .note-item span.green { color: var(--green); font-weight: 700; }
-
-    /* ════════════════════════════════════════════════════════
-       SECTION HEADERS
-    ════════════════════════════════════════════ */
-    .section-eyebrow {
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--indigo-light);
-      display: block;
-      margin-bottom: 12px;
-    }
-
-    .section-title {
-      font-size: clamp(1.5rem, 3.8vw, 2.2rem);
-      font-weight: 900;
-      line-height: 1.25;
-      margin-bottom: 14px;
-      letter-spacing: -0.3px;
-    }
-
-    .section-sub {
-      font-size: 0.95rem;
-      color: var(--muted-light);
-      max-width: 560px;
-      line-height: 1.75;
-    }
-
-    /* Decorative section divider */
-    .section-divider {
-      width: 60px;
-      height: 3px;
-      background: linear-gradient(90deg, var(--indigo), transparent);
-      border-radius: 2px;
-      margin-bottom: 20px;
-    }
-
-    .centered { text-align: center; }
-    .centered .section-divider { margin-inline: auto; }
-    .centered .section-sub { margin-inline: auto; }
-
-    /* ════════════════════════════════════════════════════════
-       STATS BAR
-    ════════════════════════════════════════════ */
-    .stats-bar {
-      padding: 44px 0;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      background: var(--bg-card);
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 24px;
-      text-align: center;
-    }
-
-    .stat-item {}
-    .stat-num {
-      font-size: clamp(2rem, 4vw, 2.8rem);
-      font-weight: 900;
-      color: var(--white);
-      font-family: 'IBM Plex Mono', monospace;
-      line-height: 1;
-      margin-bottom: 6px;
-      background: linear-gradient(135deg, var(--white), var(--muted-light));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .stat-num .accent { color: var(--green); -webkit-text-fill-color: var(--green); }
-    .stat-label { font-size: 0.82rem; color: var(--muted); font-weight: 600; }
-
-    /* ════════════════════════════════════════════════════════
-       TOOLS STRIPE
-    ════════════════════════════════════════════ */
-    .tools-stripe {
-      padding: 50px 0;
-      border-bottom: 1px solid var(--border);
-      text-align: center;
-    }
-
-    .tools-label {
-      font-size: 0.75rem;
-      color: var(--muted);
-      font-weight: 700;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      margin-bottom: 28px;
-    }
-
-    .tools-list {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px 14px;
-    }
-
-    .tool-chip {
-      display: inline-flex;
-      align-items: center; gap: 8px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      padding: 8px 18px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: #9ca3af;
-      transition: border-color 0.3s, color 0.3s, background 0.3s, box-shadow 0.3s;
-      cursor: default;
-    }
-
-    .tool-chip:hover {
-      border-color: var(--border-blue);
-      color: var(--white);
-      background: var(--bg-raised);
-      box-shadow: 0 0 20px var(--indigo-glow);
-    }
-
-    .tool-chip .icon { font-size: 1rem; }
-
-    /* ════════════════════════════════════════════════════════
-       VIDEO REVIEWS GRID
-    ════════════════════════════════════════════ */
-    .reviews-section {
-      padding: 80px 0;
-    }
-
-    .video-reviews-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 24px;
-      margin-top: 44px;
-    }
-
-    .review-video-card {
-      position: relative;
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      box-shadow: 0 0 0 1px var(--border), 0 20px 50px rgba(0,0,0,0.5);
-      background: #000;
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-
-    .review-video-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 0 0 1px rgba(79,70,229,0.4), 0 30px 70px rgba(0,0,0,0.6);
-    }
-
-    .review-video-card .vsl-bar {
-      font-size: 0.82rem;
-    }
-
-    /* ─── Text testimonials ─── */
-    .text-reviews-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 18px;
-      margin-top: 28px;
-    }
-
-    .text-review-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px 22px;
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.3s, transform 0.3s;
-    }
-
-    .text-review-card::before {
-      content: '"';
-      position: absolute;
-      top: -10px; left: 16px;
-      font-size: 6rem;
-      color: var(--indigo);
-      opacity: 0.07;
-      font-family: 'Cairo', sans-serif;
-      font-weight: 900;
-      line-height: 1;
-    }
-
-    .text-review-card:hover {
-      border-color: rgba(79,70,229,0.3);
-      transform: translateY(-4px);
-    }
-
-    .review-text {
-      font-size: 0.88rem;
-      color: var(--muted-light);
-      line-height: 1.8;
-      margin-bottom: 16px;
-      position: relative;
-    }
-
-    .reviewer-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .reviewer-avatar {
-      width: 38px; height: 38px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--indigo), var(--green));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: #fff;
-      flex-shrink: 0;
-    }
-
-    .reviewer-name { font-size: 0.88rem; font-weight: 700; }
-    .reviewer-role { font-size: 0.75rem; color: var(--muted); }
-
-    .stars {
-      color: var(--gold);
-      font-size: 0.8rem;
-      margin-bottom: 10px;
-      letter-spacing: 2px;
-    }
-
-    /* ════════════════════════════════════════════════════════
-       STORY / ORIGIN SECTION
-    ════════════════════════════════════════════ */
-    .story-section {
-      padding: 90px 0;
-      background: var(--bg-card);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .story-flex {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 50px;
-      align-items: center;
-    }
-
-    .story-content { flex: 1; min-width: 300px; }
-
-    .story-body {
-      font-size: 0.93rem;
-      color: var(--muted-light);
-      line-height: 1.85;
-      margin-bottom: 20px;
-    }
-
-    .story-body strong { color: var(--white); font-weight: 700; }
-
-    .pain-points {
-      list-style: none;
-      margin: 24px 0;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .pain-point {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      font-size: 0.9rem;
-      color: var(--muted-light);
-    }
-
-    .pain-icon {
-      width: 24px; height: 24px;
-      border-radius: 50%;
-      background: rgba(239,68,68,0.1);
-      border: 1px solid rgba(239,68,68,0.25);
-      color: var(--red);
-      font-size: 0.7rem;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-
-    .story-img-box {
-      flex: 1; min-width: 280px;
-      position: relative;
-    }
-
-    .story-img-box img {
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border-blue);
-      box-shadow: 0 0 60px var(--indigo-glow), 0 30px 60px rgba(0,0,0,0.5);
-      margin: 0 auto;
-      width: 100%;
-      max-width: 420px;
-    }
-
-    /* Floating badge on image */
-    .img-badge {
-      position: absolute;
-      bottom: -14px; right: -14px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-blue);
-      border-radius: 14px;
-      padding: 14px 18px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.5), 0 0 20px var(--indigo-glow);
-      text-align: center;
-      min-width: 130px;
-    }
-
-    .img-badge .badge-num {
-      font-size: 1.6rem;
-      font-weight: 900;
-      color: var(--green);
-      font-family: 'IBM Plex Mono', monospace;
-      line-height: 1;
-    }
-
-    .img-badge .badge-label {
-      font-size: 0.73rem;
-      color: var(--muted-light);
-      margin-top: 4px;
-    }
-
-    /* ════════════════════════════════════════════════════════
-       MODULES / CHAPTERS
-    ════════════════════════════════════════════ */
-    .chapters-section {
-      padding: 90px 0;
-    }
-
-    .chapters-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 18px;
-      margin-top: 50px;
-    }
-
-    .chapter-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 30px 22px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.3s, transform 0.35s, box-shadow 0.35s;
-    }
-
-    .chapter-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 50% 0%, rgba(79,70,229,0.08) 0%, transparent 60%);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    .chapter-card:hover {
-      border-color: rgba(79,70,229,0.45);
-      transform: translateY(-6px);
-      box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 30px rgba(79,70,229,0.1);
-    }
-
-    .chapter-card:hover::before { opacity: 1; }
-
-    .ch-num {
-      display: inline-flex;
-      align-items: center; justify-content: center;
-      width: 46px; height: 46px;
-      border-radius: 14px;
-      background: rgba(79,70,229,0.1);
-      border: 1px solid rgba(79,70,229,0.25);
-      color: var(--indigo-light);
-      font-weight: 900;
-      font-size: 0.95rem;
-      margin: 0 auto 18px;
-      font-family: 'IBM Plex Mono', monospace;
-      transition: background 0.3s, border-color 0.3s;
-    }
-
-    .chapter-card:hover .ch-num {
-      background: rgba(79,70,229,0.2);
-      border-color: rgba(79,70,229,0.5);
-    }
-
-    .chapter-card h3 {
-      font-size: 0.92rem;
-      font-weight: 700;
-      margin-bottom: 10px;
-      line-height: 1.45;
-    }
-
-    .chapter-card p {
-      font-size: 0.79rem;
-      color: var(--muted);
-      line-height: 1.65;
-    }
-
-    .chapter-lessons {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: var(--indigo-light);
-      background: rgba(79,70,229,0.08);
-      border: 1px solid rgba(79,70,229,0.15);
-      border-radius: 100px;
-      padding: 3px 10px;
-      margin-top: 14px;
-    }
-
-    /* ════════════════════════════════════════════════════════
-       OFFER + VALUE STACK
-    ════════════════════════════════════════════ */
-    .offer-section {
-      padding: 90px 0;
-      background: var(--bg-card);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    /* ─── Countdown timer (large) ─── */
-    .countdown-block {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      margin-bottom: 40px;
-      flex-wrap: wrap;
-    }
-
-    .countdown-label {
-      font-size: 0.82rem;
-      color: var(--muted);
-      font-weight: 600;
-      margin-bottom: 12px;
-      text-align: center;
-    }
-
-    .countdown-wrap {
-      text-align: center;
-    }
-
-    .countdown-unit {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .countdown-num {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: clamp(2rem, 5vw, 3rem);
-      font-weight: 700;
-      color: var(--white);
-      background: var(--bg-raised);
-      border: 1px solid rgba(239,68,68,0.25);
-      border-radius: 12px;
-      width: 70px;
-      height: 70px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 20px rgba(239,68,68,0.1);
-      letter-spacing: 2px;
-    }
-
-    .countdown-unit-label {
-      font-size: 0.65rem;
-      font-weight: 700;
-      color: var(--muted);
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-    }
-
-    .countdown-sep {
-      font-size: 2rem;
-      color: var(--muted);
-      font-family: 'IBM Plex Mono', monospace;
-      margin-bottom: 16px;
-    }
-
-    /* ─── Offer box ─── */
-    .offer-box {
-      background: var(--bg-raised);
-      border: 1px solid rgba(79,70,229,0.4);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      box-shadow: 0 0 0 1px rgba(79,70,229,0.1), 0 0 100px rgba(79,70,229,0.08);
-      max-width: 740px;
-      margin: 0 auto;
-    }
-
-    .offer-box-header {
-      background: linear-gradient(135deg, rgba(79,70,229,0.18) 0%, rgba(79,70,229,0.04) 100%);
-      padding: 32px 40px;
-      text-align: center;
-      border-bottom: 1px solid rgba(79,70,229,0.15);
-    }
-
-    .offer-box-header h2 { font-size: 1.4rem; font-weight: 900; }
-    .offer-box-header p  { font-size: 0.88rem; color: var(--muted-light); margin-top: 6px; }
-
-    .offer-items { padding: 0 40px; }
-
-    .offer-item {
-      display: flex;
-      align-items: center; justify-content: space-between;
-      gap: 16px;
-      padding: 20px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .offer-item:last-child { border-bottom: none; }
-
-    .offer-item-left {
-      display: flex; align-items: flex-start; gap: 14px;
-    }
-
-    .offer-icon {
-      width: 44px; height: 44px;
-      border-radius: 12px;
-      flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.2rem;
-    }
-
-    .offer-icon.main  { background: rgba(79,70,229,0.12); border: 1px solid rgba(79,70,229,0.25); }
-    .offer-icon.bonus { background: rgba(251,191,36,0.1);  border: 1px solid rgba(251,191,36,0.25); }
-
-    .offer-item h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 3px; }
-    .offer-item p  { font-size: 0.76rem; color: var(--muted); }
-
-    .offer-value {
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: var(--muted);
-      white-space: nowrap;
-      flex-shrink: 0;
-      font-family: 'IBM Plex Mono', monospace;
-    }
-
-    .bonus-tag {
-      font-size: 0.62rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      background: rgba(251,191,36,0.08);
-      border: 1px solid rgba(251,191,36,0.3);
-      color: var(--gold);
-      padding: 2px 8px;
-      border-radius: 100px;
-      display: inline-block;
-      margin-bottom: 5px;
-    }
-
-    .offer-footer {
-      padding: 36px 40px;
-      text-align: center;
-      background: linear-gradient(180deg, transparent 0%, rgba(16,185,129,0.03) 100%);
-      border-top: 1px solid var(--border);
-    }
-
-    .total-value-row {
-      font-size: 0.9rem;
-      color: var(--muted);
-      margin-bottom: 10px;
-    }
-
-    .total-value-row .strike {
-      color: var(--red);
-      text-decoration: line-through;
-      font-weight: 700;
-      font-size: 1rem;
-      font-family: 'IBM Plex Mono', monospace;
-    }
-
-    .price-today-label {
-      font-size: 0.88rem;
-      color: var(--muted-light);
-      margin-bottom: 6px;
-    }
-
-    .price-big {
-      font-size: clamp(2.8rem, 7vw, 4rem);
-      font-weight: 900;
-      color: var(--green);
-      line-height: 1;
-      font-family: 'IBM Plex Mono', monospace;
-      direction: ltr;
-      display: inline-block;
-      text-shadow: 0 0 50px var(--green-glow);
-    }
-
-    .price-currency {
-      font-size: 1.2rem;
-      vertical-align: top;
-      padding-top: 12px;
-      display: inline-block;
-      font-family: 'Cairo', sans-serif;
-      color: var(--muted-light);
-    }
-
-    .price-period {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-bottom: 28px;
-      margin-top: 4px;
-    }
-
-    .scarcity-note {
-      font-size: 0.82rem;
-      color: #fca5a5;
-      background: rgba(239,68,68,0.06);
-      border: 1px solid rgba(239,68,68,0.18);
-      border-radius: 8px;
-      padding: 8px 16px;
-      display: inline-block;
-      margin-top: 16px;
-    }
-
-    .slots-bar {
-      max-width: 300px;
-      margin: 14px auto 0;
-    }
-
-    .slots-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.72rem;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
-
-    .slots-track {
-      height: 6px;
-      background: var(--border);
-      border-radius: 100px;
-      overflow: hidden;
-    }
-
-    .slots-fill {
-      height: 100%;
-      width: 73%;
-      background: linear-gradient(90deg, var(--red), #f97316);
-      border-radius: 100px;
-      animation: slotsPulse 2s ease infinite;
-    }
-
-    /* ════════════════════════════════════════════════════════
-       GUARANTEE
-    ════════════════════════════════════════════ */
-    .guarantee-section { padding: 60px 0; }
-
-    .guarantee-box {
-      max-width: 660px;
-      margin: 0 auto;
-      background: var(--bg-card);
-      border: 1px solid rgba(16,185,129,0.25);
-      border-radius: var(--radius-xl);
-      padding: 48px 40px;
-      text-align: center;
-      box-shadow: 0 0 80px rgba(16,185,129,0.06), 0 20px 60px rgba(0,0,0,0.4);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .guarantee-box::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--green), transparent);
-    }
-
-    .guarantee-badge {
-      font-size: 4.5rem;
-      margin-bottom: 18px;
-      display: block;
-      animation: float 3s ease infinite;
-    }
-
-    .guarantee-box h3 {
-      font-size: 1.35rem;
-      font-weight: 900;
-      margin-bottom: 14px;
-    }
-
-    .guarantee-box p {
-      font-size: 0.9rem;
-      color: var(--muted-light);
-      line-height: 1.8;
-      max-width: 460px;
-      margin: 0 auto;
-    }
-
-    .guarantee-points {
-      display: flex;
-      justify-content: center;
-      gap: 28px;
-      margin-top: 24px;
-      flex-wrap: wrap;
-    }
-
-    .gp {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.8rem;
-      color: var(--muted-light);
-      font-weight: 600;
-    }
-
-    .gp .gp-icon { color: var(--green); }
-
-    /* ════════════════════════════════════════════════════════
-       SCREENSHOTS / SOCIAL PROOF
-    ════════════════════════════════════════════ */
-    .screenshots-section {
-      padding: 90px 0;
-      background: var(--bg-card);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .screenshots-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 18px;
-      margin-top: 44px;
-    }
-
-    .screenshot-card {
-      position: relative;
-      border-radius: var(--radius);
-      overflow: hidden;
-      border: 1px solid var(--border);
-      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
-      cursor: zoom-in;
-    }
-
-    .screenshot-card img {
-      width: 100%;
-      display: block;
-    }
-
-    .screenshot-card:hover {
-      transform: scale(1.03) translateY(-4px);
-      border-color: var(--border-blue);
-      box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 30px var(--indigo-glow);
-    }
-
-    .screenshot-overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.7) 100%);
-      display: flex;
-      align-items: flex-end;
-      padding: 14px;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    .screenshot-card:hover .screenshot-overlay { opacity: 1; }
-
-    .screenshot-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--white);
-    }
-
-    /* ════════════════════════════════════════════════════════
-       FAQ ACCORDION
-    ════════════════════════════════════════════ */
-    .faq-section {
-      padding: 90px 0;
-    }
-
-    .faq-list {
-      margin-top: 44px;
-      max-width: 760px;
-      margin-inline: auto;
-    }
-
-    .faq-item {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      margin-bottom: 10px;
-      overflow: hidden;
-      transition: border-color 0.3s, box-shadow 0.3s;
-    }
-
-    .faq-item.open {
-      border-color: rgba(79,70,229,0.4);
-      box-shadow: 0 0 30px rgba(79,70,229,0.06);
-    }
-
-    .faq-q {
-      padding: 20px 26px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 0.93rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 14px;
-      user-select: none;
-    }
-
-    .faq-icon {
-      width: 30px; height: 30px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      background: rgba(79,70,229,0.08);
-      border: 1px solid rgba(79,70,229,0.25);
-      color: var(--indigo-light);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
-      transition: transform 0.35s, background 0.3s;
-    }
-
-    .faq-item.open .faq-icon {
-      transform: rotate(45deg);
-      background: rgba(79,70,229,0.18);
-    }
-
-    .faq-a {
-      max-height: 0;
-      overflow: hidden;
-      padding: 0 26px;
-      font-size: 0.87rem;
-      color: var(--muted-light);
-      line-height: 1.8;
-      transition: max-height 0.4s ease, padding 0.3s;
-    }
-
-    .faq-item.open .faq-a {
-      max-height: 300px;
-      padding: 0 26px 24px;
-    }
-
-    /* ════════════════════════════════════════════════════════
-       FINAL CTA SECTION
-    ════════════════════════════════════════════ */
-    .final-cta-section {
-      padding: 100px 0;
-      text-align: center;
-      background: linear-gradient(180deg, transparent, rgba(79,70,229,0.04), transparent);
-    }
-
-    /* ════════════════════════════════════════════════════════
-       STICKY CTA BAR
-    ════════════════════════════════════════════ */
-    .sticky-cta {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      background: rgba(8,8,16,0.92);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(16,185,129,0.2);
-      padding: 12px 20px;
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 14px;
-      z-index: 999;
-      transform: translateY(100%);
-      transition: transform 0.45s cubic-bezier(0.4,0,0.2,1);
-    }
-
-    .sticky-cta.show { transform: translateY(0); }
-
-    .sticky-left {}
-    .sticky-left strong { font-size: 1rem; display: block; color: var(--green); line-height: 1.2; }
-    .sticky-left span   { font-size: 0.76rem; color: var(--muted-light); }
-
-    .sticky-cta .btn-cta {
-      font-size: 0.95rem;
-      padding: 12px 26px;
-      animation: ctaPulse 2.5s infinite;
-      white-space: nowrap;
-    }
-
-    /* ════════════════════════════════════════════════════════
-       FOOTER
-    ════════════════════════════════════════════ */
-    footer {
-      background: var(--bg-card);
-      border-top: 1px solid var(--border);
-      padding: 36px 20px;
-      text-align: center;
-      font-size: 0.8rem;
-      color: var(--muted);
-      margin-bottom: 64px;
-    }
-
-    footer a { color: var(--indigo-light); transition: color 0.2s; }
-    footer a:hover { color: var(--white); }
-
-    .footer-logo {
-      font-size: 1.1rem;
-      font-weight: 900;
-      font-family: 'IBM Plex Mono', monospace;
-      color: var(--white);
-      margin-bottom: 12px;
-      opacity: 0.7;
-    }
-
-    /* ════════════════════════════════════════════════════════
-       KEYFRAME ANIMATIONS
-    ════════════════════════════════════════════ */
-    @keyframes fadeInDown  { from { opacity:0; transform:translateY(-24px); } to { opacity:1; transform:translateY(0); } }
-    @keyframes fadeInUp    { from { opacity:0; transform:translateY(32px);  } to { opacity:1; transform:translateY(0); } }
-    @keyframes blink       { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(1.4)} }
-    @keyframes ping        { 0%{opacity:0.7;transform:scale(1)} 100%{opacity:0;transform:scale(2.1)} }
-    @keyframes float       { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-    @keyframes progressLoad{ from{width:0%} to{width:100%} }
-    @keyframes shimmer     { 0%{left:-100%} 100%{left:200%} }
-    @keyframes slotsPulse  { 0%,100%{opacity:1} 50%{opacity:0.7} }
-    @keyframes gradShift   { 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
-    @keyframes btnGradShift{ 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
-
-    @keyframes ctaPulse {
-      0%,100% { box-shadow: 0 8px 40px var(--green-glow); }
-      50%     { box-shadow: 0 8px 60px rgba(16,185,129,0.55), 0 0 0 10px rgba(16,185,129,0.05); }
-    }
-
-    /* ════════════════════════════════════════════════════════
-       RESPONSIVE — PC LARGE (1280px+)
-    ════════════════════════════════════════════ */
-    @media (min-width: 1280px) {
-      .container { max-width: 1060px; }
-      .hero h1 { font-size: 3.2rem; }
-      .chapters-grid { grid-template-columns: repeat(4, 1fr); }
-      .video-reviews-grid { grid-template-columns: repeat(3, 1fr); }
-      .text-reviews-grid { grid-template-columns: repeat(3, 1fr); }
-      .screenshots-grid { grid-template-columns: repeat(4, 1fr); }
-    }
-
-    /* ════════════════════════════════════════════════════════
-       RESPONSIVE — TABLET (768px – 1024px)
-    ════════════════════════════════════════════ */
-    @media (max-width: 1024px) and (min-width: 769px) {
-      .chapters-grid { grid-template-columns: repeat(3, 1fr); }
-      .stats-grid    { grid-template-columns: repeat(2, 1fr); gap: 20px; }
-      .video-reviews-grid { grid-template-columns: repeat(2, 1fr); }
-      .text-reviews-grid  { grid-template-columns: repeat(2, 1fr); }
-      .screenshots-grid   { grid-template-columns: repeat(2, 1fr); }
-      .story-img-box img  { max-width: 360px; }
-    }
-
-    /* ════════════════════════════════════════════════════════
-       RESPONSIVE — MOBILE LARGE (681px – 768px)
-    ════════════════════════════════════════════ */
-    @media (max-width: 768px) and (min-width: 681px) {
-      .chapters-grid { grid-template-columns: repeat(2, 1fr); }
-      .video-reviews-grid { grid-template-columns: repeat(2, 1fr); }
-      .stats-grid { grid-template-columns: repeat(2, 1fr); }
-      .story-flex { flex-direction: column-reverse; gap: 32px; }
-      .story-img-box { width: 100%; min-width: unset; }
-      .img-badge { position: static; margin-top: 14px; display: inline-block; }
-      .offer-items, .offer-box-header, .offer-footer { padding-left: 24px; padding-right: 24px; }
-    }
-
-    /* ════════════════════════════════════════════════════════
-       RESPONSIVE — MOBILE (max 680px)
-    ════════════════════════════════════════════ */
-    @media (max-width: 680px) {
-      /* Layout */
-      .container { padding: 0 16px; }
-      .story-flex { flex-direction: column-reverse; gap: 28px; }
-      .story-img-box { min-width: unset; width: 100%; }
-      .img-badge { position: static; margin-top: 14px; display: inline-block; }
-
-      /* Hero */
-      .hero { padding: 44px 0 38px; }
-      .hero h1 { font-size: 1.6rem; line-height: 1.3; }
-      .hero-sub { font-size: 0.92rem; margin-bottom: 24px; }
-      .pre-headline { font-size: 0.78rem; padding: 6px 14px; }
-      .hero-trust { gap: 10px; }
-      .trust-chip { font-size: 0.75rem; }
-
-      /* VSL */
-      .vsl-wrapper { border-radius: 12px; margin-bottom: 24px; }
-      .vsl-bar { font-size: 0.76rem; padding: 10px 14px; }
-      .play-ring { width: 72px; height: 72px; }
-
-      /* Stats */
-      .stats-bar { padding: 28px 0; }
-      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
-      .stat-num { font-size: 1.7rem; }
-      .stat-label { font-size: 0.75rem; }
-
-      /* Tools */
-      .tools-stripe { padding: 32px 0; }
-      .tool-chip { font-size: 0.78rem; padding: 7px 14px; }
-
-      /* Sections */
-      .reviews-section,
-      .story-section,
-      .chapters-section,
-      .offer-section,
-      .screenshots-section,
-      .faq-section { padding: 56px 0; }
-      .guarantee-section { padding: 40px 0; }
-      .final-cta-section { padding: 64px 0; }
-
-      /* Section headers */
-      .section-title { font-size: 1.35rem; }
-      .section-sub { font-size: 0.87rem; }
-
-      /* Chapters */
-      .chapters-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-        margin-top: 32px;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Automation Atlas | ابنِ وكالة ذكاء اصطناعي ودخل حقيقي</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+    <style>
+      /* ════════════════════════════════════════════════════════
+        ROOT VARIABLES — Luxury Black & Gold Design Tokens
+      ════════════════════════════════════════════════════════ */
+      :root {
+        --bg: #000000;
+        --bg-card: #080808;
+        --bg-raised: #0f0f0f;
+        --bg-glass: rgba(8, 8, 8, 0.85);
+        --gold: #D4AF37;
+        --gold-light: #F9D976;
+        --gold-dark: #AA8954;
+        --gold-glow: rgba(212, 175, 55, 0.35);
+        --gold-subtle: rgba(212, 175, 55, 0.07);
+        --gold-border: rgba(212, 175, 55, 0.3);
+        --green: #10b981;
+        --green-glow: rgba(16, 185, 129, 0.3);
+        --red: #ef4444;
+        --red-glow: rgba(239, 68, 68, 0.3);
+        --white: #f1f0ea;
+        --off-white: #e8e4d8;
+        --muted: #5a5648;
+        --muted-light: #8a8070;
+        --border: rgba(255, 255, 255, 0.055);
+        --border-gold: rgba(212, 175, 55, 0.3);
+        --radius: 14px;
+        --radius-lg: 22px;
+        --radius-xl: 32px;
       }
-      .chapter-card { padding: 20px 14px; border-radius: 14px; }
-      .chapter-card h3 { font-size: 0.82rem; }
-      .chapter-card p  { font-size: 0.73rem; }
-      .ch-num { width: 38px; height: 38px; border-radius: 10px; font-size: 0.82rem; margin-bottom: 12px; }
-      .chapter-lessons { font-size: 0.65rem; padding: 2px 8px; }
 
-      /* Video reviews */
-      .video-reviews-grid { grid-template-columns: 1fr; gap: 16px; margin-top: 28px; }
-      .text-reviews-grid { grid-template-columns: 1fr; gap: 14px; }
-      .text-review-card { padding: 18px 16px; }
-
-      /* Offer box */
-      .offer-box { border-radius: 18px; }
-      .offer-box-header { padding: 22px 18px; }
-      .offer-box-header h2 { font-size: 1.15rem; }
-      .offer-items { padding: 0 18px; }
-      .offer-footer { padding: 24px 18px; }
-      .offer-item { flex-direction: column; align-items: flex-start; gap: 10px; padding: 16px 0; }
-      .offer-item-left { gap: 10px; }
-      .offer-icon { width: 38px; height: 38px; font-size: 1rem; }
-      .offer-item h4 { font-size: 0.85rem; }
-      .offer-item p  { font-size: 0.73rem; }
-      .offer-value { font-size: 0.82rem; }
-
-      /* Price */
-      .price-big { font-size: 3rem; }
-      .price-currency { font-size: 1rem; }
-      .total-value-row { font-size: 0.82rem; }
-
-      /* Countdown */
-      .countdown-num {
-        width: 54px; height: 54px;
-        font-size: 1.6rem;
-        border-radius: 10px;
+      /* ════════════════════════════════════════════════════════
+        RESET & BASE
+      ════════════════════════════════════════════════════════ */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scroll-behavior: smooth; overflow-x: hidden; }
+      body {
+        font-family: "Cairo", sans-serif;
+        background: var(--bg);
+        color: var(--white);
+        direction: rtl;
+        overflow-x: hidden;
+        line-height: 1.7;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
       }
-      .countdown-sep { font-size: 1.6rem; margin-bottom: 14px; }
-      .countdown-unit-label { font-size: 0.6rem; }
-      .countdown-block { gap: 4px; }
+      img, video { max-width: 100%; height: auto; display: block; }
+      a, button { touch-action: manipulation; }
 
-      /* Guarantee */
-      .guarantee-box { padding: 32px 18px; border-radius: 20px; }
-      .guarantee-badge { font-size: 3.5rem; }
-      .guarantee-box h3 { font-size: 1.1rem; }
-      .guarantee-box p  { font-size: 0.84rem; }
-      .guarantee-points { gap: 16px; }
+      body::before {
+        content: "";
+        position: fixed; inset: 0; z-index: 0;
+        background-image:
+          linear-gradient(rgba(212, 175, 55, 0.018) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(212, 175, 55, 0.018) 1px, transparent 1px);
+        background-size: 52px 52px;
+        pointer-events: none;
+      }
 
-      /* Screenshots */
-      .screenshots-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 28px; }
+      body::after {
+        content: "";
+        position: fixed; inset: 0; z-index: 0;
+        background:
+          radial-gradient(ellipse 55% 35% at 10% 15%, rgba(212, 175, 55, 0.07) 0%, transparent 60%),
+          radial-gradient(ellipse 45% 25% at 90% 75%, rgba(170, 137, 84, 0.05) 0%, transparent 60%);
+        pointer-events: none;
+      }
 
-      /* FAQ */
-      .faq-list { margin-top: 28px; }
-      .faq-q { padding: 16px 18px; font-size: 0.86rem; }
-      .faq-a { padding: 0 18px; font-size: 0.82rem; }
-      .faq-item.open .faq-a { padding: 0 18px 18px; }
+      section, header, footer, .full-stripe { position: relative; z-index: 1; }
 
-      /* CTA */
-      .btn-cta { padding: 15px 28px; font-size: 1rem; border-radius: 100px; }
-      .cta-sub-note { font-size: 0.76rem; gap: 10px; }
+      .container { max-width: 940px; margin: 0 auto; padding: 0 22px; }
+      img { max-width: 100%; display: block; }
+      a { color: inherit; text-decoration: none; }
 
-      /* Sticky bar */
-      .sticky-cta {
-        flex-direction: column;
-        align-items: stretch;
+      /* ════════════════════════════════════════════════════════
+        URGENCY TOP BAR
+      ════════════════════════════════════════════════════════ */
+      .urgency-topbar {
+        background: linear-gradient(90deg, #1a1200 0%, #2a1e00 50%, #1a1200 100%);
+        background-size: 200% 100%;
+        animation: gradShift 4s linear infinite;
+        border-bottom: 1px solid var(--border-gold);
         text-align: center;
-        padding: 12px 14px;
+        padding: 10px 16px;
+        font-size: 0.88rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         gap: 10px;
+        flex-wrap: wrap;
+        z-index: 100;
+        position: relative;
+        color: var(--gold-light);
       }
-      .sticky-cta .btn-cta { width: 100%; font-size: 1rem; padding: 13px; animation: ctaPulse 2.5s infinite; }
-      .sticky-left strong { font-size: 0.92rem; }
-      .sticky-left span   { font-size: 0.73rem; }
 
-      /* Urgency bar */
-      .urgency-topbar { font-size: 0.8rem; padding: 9px 12px; gap: 6px; }
-      .urgency-topbar .timer-inline { font-size: 0.9rem; padding: 2px 10px; }
+      .urgency-topbar .timer-inline {
+        font-family: "IBM Plex Mono", monospace;
+        background: rgba(212, 175, 55, 0.12);
+        padding: 2px 14px;
+        border-radius: 20px;
+        color: var(--gold-light);
+        font-size: 1rem;
+        letter-spacing: 2px;
+        direction: ltr;
+        border: 1px solid rgba(212, 175, 55, 0.3);
+      }
 
-      /* Story */
-      .story-section { padding: 52px 0; }
-      .story-body { font-size: 0.88rem; }
-      .pain-point { font-size: 0.84rem; }
-    }
+      /* ════════════════════════════════════════════════════════
+        HERO
+      ════════════════════════════════════════════════════════ */
+      .hero { padding: 64px 0 56px; text-align: center; }
 
-    /* ════════════════════════════════════════════════════════
-       RESPONSIVE — SMALL MOBILE (max 380px)
-    ════════════════════════════════════════════ */
-    @media (max-width: 380px) {
-      .hero h1 { font-size: 1.4rem; }
-      .chapters-grid { grid-template-columns: 1fr; }
-      .screenshots-grid { grid-template-columns: 1fr; }
-      .countdown-num { width: 48px; height: 48px; font-size: 1.4rem; }
-      .stats-grid { grid-template-columns: repeat(2, 1fr); }
-      .hero-trust { flex-direction: column; gap: 8px; align-items: center; }
-      .btn-cta { font-size: 0.95rem; padding: 14px 20px; }
-      .offer-box-header h2 { font-size: 1rem; }
-      .section-title { font-size: 1.2rem; }
-    }
-  </style>
-</head>
-<body>
+      .hero-glow {
+        position: absolute;
+        width: 700px; height: 700px;
+        background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 65%);
+        top: -200px; left: 50%;
+        transform: translateX(-50%);
+        pointer-events: none;
+      }
 
-<!-- ════════════════════════════════════════
+      .pre-headline {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(212, 175, 55, 0.08);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        color: var(--gold-light);
+        padding: 7px 20px;
+        border-radius: 100px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-bottom: 26px;
+        animation: fadeInDown 0.6s ease both;
+        backdrop-filter: blur(8px);
+      }
+
+      .dot-live {
+        width: 8px; height: 8px;
+        background: var(--red);
+        border-radius: 50%;
+        flex-shrink: 0;
+        animation: blink 1.2s infinite;
+        box-shadow: 0 0 6px var(--red);
+      }
+
+      .hero h1 {
+        font-size: clamp(1.8rem, 4.5vw, 3rem);
+        font-weight: 900;
+        line-height: 1.25;
+        margin-bottom: 22px;
+        animation: fadeInUp 0.7s ease 0.15s both;
+        letter-spacing: -0.5px;
+        color: var(--off-white);
+      }
+
+      .hero h1 .gold { color: var(--gold-light); }
+      .hero h1 .green { color: var(--green); }
+
+      .hero-sub {
+        font-size: clamp(0.95rem, 2.2vw, 1.15rem);
+        color: var(--muted-light);
+        max-width: 640px;
+        margin: 0 auto 38px;
+        animation: fadeInUp 0.7s ease 0.25s both;
+        line-height: 1.8;
+      }
+
+      .hero-trust {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 36px;
+        animation: fadeInUp 0.7s ease 0.35s both;
+      }
+
+      .trust-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.8rem;
+        color: var(--muted-light);
+        font-weight: 600;
+      }
+
+      .trust-chip .tc-icon { color: var(--gold); font-size: 1rem; }
+
+      /* ════════════════════════════════════════════════════════
+        VSL VIDEO PLAYER
+      ════════════════════════════════════════════════════════ */
+      .vsl-wrapper {
+        position: relative;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow:
+          0 0 0 1px var(--border-gold),
+          0 0 60px rgba(212, 175, 55, 0.15),
+          0 30px 80px rgba(0, 0, 0, 0.8);
+        margin: 0 auto 38px;
+        max-width: 820px;
+        animation: fadeInUp 0.8s ease 0.3s both;
+        background: #000;
+      }
+
+      .vsl-frame { position: relative; padding-bottom: 56.25%; height: 0; }
+      .vsl-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+
+      .vsl-thumb-overlay {
+        position: absolute; inset: 0;
+        background: linear-gradient(145deg, #000000 0%, #0a0800 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 22px;
+        cursor: pointer;
+        z-index: 5;
+      }
+
+      .vsl-bg-logo {
+        font-size: 11rem;
+        opacity: 0.035;
+        font-weight: 900;
+        position: absolute;
+        color: var(--gold);
+        user-select: none;
+        letter-spacing: -8px;
+        font-family: "IBM Plex Mono", monospace;
+      }
+
+      .play-ring {
+        position: relative;
+        width: 90px; height: 90px;
+      }
+
+      .play-ring::before, .play-ring::after {
+        content: "";
+        position: absolute; inset: 0;
+        border-radius: 50%;
+        border: 2px solid rgba(212, 175, 55, 0.6);
+        animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+      }
+
+      .play-ring::after {
+        animation-delay: 0.9s;
+        border-color: rgba(249, 217, 118, 0.4);
+      }
+
+      .play-btn-inner {
+        position: absolute; inset: 0;
+        background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 50%, var(--gold-light) 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 40px var(--gold-glow), 0 0 80px rgba(212, 175, 55, 0.15);
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .play-btn-inner:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 60px var(--gold-glow), 0 0 100px rgba(212, 175, 55, 0.25);
+      }
+
+      .play-btn-inner svg { width: 30px; height: 30px; fill: #000; margin-right: -4px; }
+
+      .vsl-label { position: relative; z-index: 1; text-align: center; }
+      .vsl-label strong { display: block; font-size: 1.1rem; margin-bottom: 4px; color: var(--gold-light); }
+      .vsl-label span { font-size: 0.83rem; color: var(--muted-light); }
+
+      .vsl-bar {
+        padding: 12px 22px;
+        background: rgba(212, 175, 55, 0.04);
+        border-top: 1px solid rgba(212, 175, 55, 0.12);
+        font-size: 0.83rem;
+        color: var(--muted-light);
+        text-align: center;
+      }
+
+      .vsl-bar strong { color: var(--white); }
+
+      .vsl-progress {
+        height: 3px;
+        background: var(--border);
+        position: relative;
+      }
+
+      .vsl-progress::after {
+        content: "";
+        position: absolute; top: 0; left: 0;
+        height: 100%; width: 0%;
+        background: linear-gradient(90deg, var(--gold-dark), var(--gold-light));
+        animation: progressLoad 12s linear forwards;
+      }
+
+      /* ════════════════════════════════════════════════════════
+        CTA BUTTON
+      ════════════════════════════════════════════════════════ */
+      .btn-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 50%, var(--gold-light) 100%);
+        background-size: 200% 100%;
+        color: #000;
+        font-family: "Cairo", sans-serif;
+        font-weight: 900;
+        font-size: clamp(1.05rem, 2.8vw, 1.35rem);
+        padding: 18px 46px;
+        border-radius: 100px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        box-shadow: 0 8px 40px var(--gold-glow), 0 0 0 0 rgba(212, 175, 55, 0.2);
+        animation: ctaPulse 2.5s infinite, btnGradShift 3s ease infinite;
+        transition: transform 0.25s, box-shadow 0.25s;
+        position: relative;
+        overflow: hidden;
+        letter-spacing: 0.3px;
+      }
+
+      .btn-cta::before {
+        content: "";
+        position: absolute;
+        top: 0; left: -100%;
+        width: 60%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transform: skewX(-20deg);
+        animation: shimmer 3s infinite;
+      }
+
+      .btn-cta:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 16px 55px var(--gold-glow), 0 0 0 6px rgba(212, 175, 55, 0.08);
+        animation-play-state: paused;
+      }
+
+      .cta-sub-note {
+        font-size: 0.82rem;
+        color: var(--muted);
+        margin-top: 20px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .cta-sub-note .note-item { display: flex; align-items: center; gap: 4px; }
+      .cta-sub-note .note-item span.green { color: var(--green); font-weight: 700; }
+
+      /* ════════════════════════════════════════════════════════
+        SECTION HEADERS
+      ════════════════════════════════════════════════════════ */
+      .section-eyebrow {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--gold);
+        display: block;
+        margin-bottom: 12px;
+      }
+
+      .section-title {
+        font-size: clamp(1.5rem, 3.8vw, 2.2rem);
+        font-weight: 900;
+        line-height: 1.25;
+        margin-bottom: 14px;
+        letter-spacing: -0.3px;
+        color: var(--off-white);
+      }
+
+      .section-sub {
+        font-size: 0.95rem;
+        color: var(--muted-light);
+        max-width: 560px;
+        line-height: 1.75;
+      }
+
+      .section-divider {
+        width: 60px; height: 3px;
+        background: linear-gradient(90deg, var(--gold), transparent);
+        border-radius: 2px;
+        margin-bottom: 20px;
+      }
+
+      .centered { text-align: center; }
+      .centered .section-divider { margin-inline: auto; }
+      .centered .section-sub { margin-inline: auto; }
+
+      /* ════════════════════════════════════════════════════════
+        STATS BAR
+      ════════════════════════════════════════════════════════ */
+      .stats-bar {
+        padding: 44px 0;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        background: var(--bg-card);
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 24px;
+        text-align: center;
+      }
+
+      .stat-num {
+        font-size: clamp(2rem, 4vw, 2.8rem);
+        font-weight: 900;
+        font-family: "IBM Plex Mono", monospace;
+        line-height: 1;
+        margin-bottom: 6px;
+        background: linear-gradient(135deg, var(--gold-light), var(--gold-dark));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .stat-num .accent { color: var(--gold); -webkit-text-fill-color: var(--gold); }
+      .stat-label { font-size: 0.82rem; color: var(--muted); font-weight: 600; }
+
+      /* ════════════════════════════════════════════════════════
+        TOOLS STRIPE
+      ════════════════════════════════════════════════════════ */
+      .tools-stripe {
+        padding: 50px 0;
+        border-bottom: 1px solid var(--border);
+        text-align: center;
+      }
+
+      .tools-label {
+        font-size: 0.75rem;
+        color: var(--muted);
+        font-weight: 700;
+        letter-spacing: 2.5px;
+        text-transform: uppercase;
+        margin-bottom: 28px;
+      }
+
+      .tools-list {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px 14px;
+      }
+
+      .tool-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 100px;
+        padding: 8px 18px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #6a6050;
+        transition: border-color 0.3s, color 0.3s, background 0.3s, box-shadow 0.3s;
+        cursor: default;
+      }
+
+      .tool-chip:hover {
+        border-color: var(--border-gold);
+        color: var(--gold-light);
+        background: var(--bg-raised);
+        box-shadow: 0 0 20px var(--gold-glow);
+      }
+
+      .tool-chip .icon { font-size: 1rem; }
+
+      /* ════════════════════════════════════════════════════════
+        VIDEO REVIEWS GRID
+      ════════════════════════════════════════════════════════ */
+      .reviews-section { padding: 80px 0; }
+
+      .video-reviews-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 24px;
+        margin-top: 44px;
+      }
+
+      .review-video-card {
+        position: relative;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: 0 0 0 1px var(--border), 0 20px 50px rgba(0, 0, 0, 0.5);
+        background: #000;
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .review-video-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 0 0 1px var(--border-gold), 0 30px 70px rgba(0, 0, 0, 0.6), 0 0 30px var(--gold-glow);
+      }
+
+      .text-reviews-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 18px;
+        margin-top: 28px;
+      }
+
+      .text-review-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 24px 22px;
+        position: relative;
+        overflow: hidden;
+        transition: border-color 0.3s, transform 0.3s;
+      }
+
+      .text-review-card::before {
+        content: '"';
+        position: absolute;
+        top: -10px; left: 16px;
+        font-size: 6rem;
+        color: var(--gold);
+        opacity: 0.06;
+        font-family: "Cairo", sans-serif;
+        font-weight: 900;
+        line-height: 1;
+      }
+
+      .text-review-card:hover {
+        border-color: var(--border-gold);
+        transform: translateY(-4px);
+        box-shadow: 0 0 25px var(--gold-glow);
+      }
+
+      .review-text { font-size: 0.88rem; color: var(--muted-light); line-height: 1.8; margin-bottom: 16px; position: relative; }
+
+      .reviewer-info { display: flex; align-items: center; gap: 10px; }
+
+      .reviewer-avatar {
+        width: 38px; height: 38px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #000;
+        flex-shrink: 0;
+      }
+
+      .reviewer-name { font-size: 0.88rem; font-weight: 700; }
+      .reviewer-role { font-size: 0.75rem; color: var(--muted); }
+      .stars { color: var(--gold); font-size: 0.8rem; margin-bottom: 10px; letter-spacing: 2px; }
+
+      /* ════════════════════════════════════════════════════════
+        STORY SECTION
+      ════════════════════════════════════════════════════════ */
+      .story-section {
+        padding: 90px 0;
+        background: var(--bg-card);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .story-flex { display: flex; flex-wrap: wrap; gap: 50px; align-items: center; }
+      .story-content { flex: 1; min-width: 300px; }
+
+      .story-body { font-size: 0.93rem; color: var(--muted-light); line-height: 1.85; margin-bottom: 20px; }
+      .story-body strong { color: var(--off-white); font-weight: 700; }
+
+      .pain-points { list-style: none; margin: 24px 0; display: flex; flex-direction: column; gap: 10px; }
+
+      .pain-point { display: flex; align-items: flex-start; gap: 12px; font-size: 0.9rem; color: var(--muted-light); }
+
+      .pain-icon {
+        width: 24px; height: 24px;
+        border-radius: 50%;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.25);
+        color: var(--red);
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+
+      .story-img-box { flex: 1; min-width: 280px; position: relative; }
+
+      .story-img-box img {
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border-gold);
+        box-shadow: 0 0 60px var(--gold-glow), 0 30px 60px rgba(0, 0, 0, 0.6);
+        margin: 0 auto;
+        width: 100%; max-width: 420px;
+      }
+
+      .img-badge {
+        position: absolute;
+        bottom: -14px; right: -14px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-gold);
+        border-radius: 14px;
+        padding: 14px 18px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), 0 0 20px var(--gold-glow);
+        text-align: center;
+        min-width: 130px;
+      }
+
+      .img-badge .badge-num {
+        font-size: 1.6rem;
+        font-weight: 900;
+        color: var(--gold);
+        font-family: "IBM Plex Mono", monospace;
+        line-height: 1;
+      }
+
+      .img-badge .badge-label { font-size: 0.73rem; color: var(--muted-light); margin-top: 4px; }
+
+      /* ════════════════════════════════════════════════════════
+        MODULES / CHAPTERS
+      ════════════════════════════════════════════════════════ */
+      .chapters-section { padding: 90px 0; }
+
+      .chapters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 18px;
+        margin-top: 50px;
+      }
+
+      .chapter-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 30px 22px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        transition: border-color 0.3s, transform 0.35s, box-shadow 0.35s;
+      }
+
+      .chapter-card::before {
+        content: "";
+        position: absolute; inset: 0;
+        background: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.07) 0%, transparent 60%);
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .chapter-card:hover {
+        border-color: rgba(212, 175, 55, 0.4);
+        transform: translateY(-6px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(212, 175, 55, 0.1);
+      }
+
+      .chapter-card:hover::before { opacity: 1; }
+
+      .ch-num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 46px; height: 46px;
+        border-radius: 14px;
+        background: rgba(212, 175, 55, 0.08);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        color: var(--gold);
+        font-weight: 900;
+        font-size: 0.95rem;
+        margin: 0 auto 18px;
+        font-family: "IBM Plex Mono", monospace;
+        transition: background 0.3s, border-color 0.3s;
+      }
+
+      .chapter-card:hover .ch-num {
+        background: rgba(212, 175, 55, 0.18);
+        border-color: rgba(212, 175, 55, 0.5);
+      }
+
+      .chapter-card h3 { font-size: 0.92rem; font-weight: 700; margin-bottom: 10px; line-height: 1.45; color: var(--off-white); }
+      .chapter-card p { font-size: 0.79rem; color: var(--muted); line-height: 1.65; }
+
+      .chapter-lessons {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: var(--gold);
+        background: rgba(212, 175, 55, 0.07);
+        border: 1px solid rgba(212, 175, 55, 0.15);
+        border-radius: 100px;
+        padding: 3px 10px;
+        margin-top: 14px;
+      }
+
+      /* ════════════════════════════════════════════════════════
+        OFFER + VALUE STACK
+      ════════════════════════════════════════════════════════ */
+      .offer-section {
+        padding: 90px 0;
+        background: var(--bg-card);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+
+      /* ─── Countdown ─── */
+      .countdown-block {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+      }
+
+      .countdown-label { font-size: 0.82rem; color: var(--muted); font-weight: 600; margin-bottom: 12px; text-align: center; }
+      .countdown-wrap { text-align: center; }
+      .countdown-unit { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+
+      .countdown-num {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 700;
+        color: var(--gold-light);
+        background: var(--bg-raised);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        border-radius: 12px;
+        width: 70px; height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.08);
+        letter-spacing: 2px;
+      }
+
+      .countdown-unit-label { font-size: 0.65rem; font-weight: 700; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; }
+      .countdown-sep { font-size: 2rem; color: var(--gold-dark); font-family: "IBM Plex Mono", monospace; margin-bottom: 16px; }
+
+      /* ─── Offer Box ─── */
+      .offer-box {
+        background: var(--bg-raised);
+        border: 1px solid var(--border-gold);
+        border-radius: var(--radius-xl);
+        overflow: hidden;
+        box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.08), 0 0 100px rgba(212, 175, 55, 0.07);
+        max-width: 740px;
+        margin: 0 auto;
+      }
+
+      .offer-box-header {
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.02) 100%);
+        padding: 32px 40px;
+        text-align: center;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+      }
+
+      .offer-box-header h2 { font-size: 1.4rem; font-weight: 900; color: var(--off-white); }
+      .offer-box-header p { font-size: 0.88rem; color: var(--muted-light); margin-top: 6px; }
+
+      .offer-items { padding: 0 40px; }
+
+      .offer-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 20px 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .offer-item:last-child { border-bottom: none; }
+      .offer-item-left { display: flex; align-items: flex-start; gap: 14px; }
+
+      .offer-icon {
+        width: 44px; height: 44px;
+        border-radius: 12px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+      }
+
+      .offer-icon.main {
+        background: rgba(212, 175, 55, 0.08);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+      }
+
+      .offer-icon.bonus {
+        background: rgba(212, 175, 55, 0.06);
+        border: 1px solid rgba(212, 175, 55, 0.18);
+      }
+
+      .offer-item h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 3px; color: var(--off-white); }
+      .offer-item p { font-size: 0.76rem; color: var(--muted); }
+
+      .offer-value {
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: var(--gold-dark);
+        white-space: nowrap;
+        flex-shrink: 0;
+        font-family: "IBM Plex Mono", monospace;
+      }
+
+      .bonus-tag {
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        background: rgba(212, 175, 55, 0.07);
+        border: 1px solid rgba(212, 175, 55, 0.25);
+        color: var(--gold);
+        padding: 2px 8px;
+        border-radius: 100px;
+        display: inline-block;
+        margin-bottom: 5px;
+      }
+
+      .offer-footer {
+        padding: 36px 40px;
+        text-align: center;
+        background: linear-gradient(180deg, transparent 0%, rgba(212, 175, 55, 0.03) 100%);
+        border-top: 1px solid var(--border);
+      }
+
+      .total-value-row { font-size: 0.9rem; color: var(--muted); margin-bottom: 10px; }
+      .total-value-row .strike { color: var(--red); text-decoration: line-through; font-weight: 700; font-size: 1rem; font-family: "IBM Plex Mono", monospace; }
+
+      .price-today-label { font-size: 0.88rem; color: var(--muted-light); margin-bottom: 6px; }
+
+      .price-big {
+        font-size: clamp(2.8rem, 7vw, 4rem);
+        font-weight: 900;
+        color: var(--gold);
+        line-height: 1;
+        font-family: "IBM Plex Mono", monospace;
+        direction: ltr;
+        display: inline-block;
+        text-shadow: 0 0 50px var(--gold-glow);
+      }
+
+      .price-currency {
+        font-size: 1.2rem;
+        vertical-align: top;
+        padding-top: 12px;
+        display: inline-block;
+        font-family: "Cairo", sans-serif;
+        color: var(--muted-light);
+      }
+
+      .price-period { font-size: 0.78rem; color: var(--muted); margin-bottom: 28px; margin-top: 4px; }
+
+      .scarcity-note {
+        font-size: 0.82rem;
+        color: #fca5a5;
+        background: rgba(239, 68, 68, 0.06);
+        border: 1px solid rgba(239, 68, 68, 0.18);
+        border-radius: 8px;
+        padding: 8px 16px;
+        display: inline-block;
+        margin-top: 16px;
+      }
+
+      .slots-bar { max-width: 300px; margin: 14px auto 0; }
+      .slots-label { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--muted); margin-bottom: 6px; }
+      .slots-track { height: 6px; background: var(--border); border-radius: 100px; overflow: hidden; }
+      .slots-fill {
+        height: 100%; width: 73%;
+        background: linear-gradient(90deg, var(--red), #f97316);
+        border-radius: 100px;
+        animation: slotsPulse 2s ease infinite;
+      }
+
+      /* ════════════════════════════════════════════════════════
+        RAMADAN SPECIAL CARD — Luxury Dark Version
+      ════════════════════════════════════════════════════════ */
+      .ramadan-card {
+        background: var(--bg-raised);
+        border-radius: 24px;
+        padding: 30px;
+        color: var(--off-white);
+        max-width: 740px;
+        margin: 40px auto;
+        box-shadow: 0 0 0 1px var(--border-gold), 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 40px var(--gold-glow);
+        text-align: right;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .ramadan-card::before {
+        content: "";
+        position: absolute; top: 0; left: 0; right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--gold), var(--gold-light), var(--gold), transparent);
+      }
+
+      .offer-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(212, 175, 55, 0.1);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        color: var(--gold-light);
+        padding: 6px 15px;
+        border-radius: 100px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+      }
+
+      .green-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block; }
+
+      .ramadan-card h3 { font-size: 1.6rem; font-weight: 900; margin-bottom: 10px; color: var(--gold-light); }
+      .price-sub-desc { font-size: 0.9rem; color: var(--muted-light); margin-bottom: 20px; }
+
+      .price-main-box {
+        background: rgba(212, 175, 55, 0.04);
+        border: 1px solid var(--border-gold);
+        border-radius: 16px;
+        padding: 20px 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+      }
+
+      .price-right-side .label { display: block; font-size: 1rem; color: var(--off-white); font-weight: 700; }
+      .price-right-side .sub-label { font-size: 0.8rem; color: var(--muted-light); }
+
+      .price-amount {
+        font-size: 2.8rem;
+        font-weight: 900;
+        color: var(--gold);
+        font-family: "IBM Plex Mono", monospace;
+        text-shadow: 0 0 30px var(--gold-glow);
+      }
+
+      .progress-container { margin-bottom: 20px; }
+
+      .progress-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.95rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+        color: var(--off-white);
+      }
+
+      .progress-labels span:last-child { color: var(--gold); }
+
+      .progress-bar-bg {
+        height: 14px;
+        background: rgba(255,255,255,0.06);
+        border-radius: 100px;
+        overflow: hidden;
+        border: 1px solid rgba(212, 175, 55, 0.15);
+      }
+
+      .progress-bar-fill {
+        height: 100%;
+        width: 97%;
+        background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light));
+        border-radius: 100px;
+        box-shadow: 0 0 12px var(--gold-glow);
+      }
+
+      .urgency-badge-light {
+        background: rgba(212, 175, 55, 0.07);
+        border: 1px dashed rgba(212, 175, 55, 0.35);
+        padding: 14px;
+        border-radius: 12px;
+        text-align: center;
+        font-weight: 800;
+        color: var(--gold-light);
+        margin-bottom: 20px;
+      }
+
+      .live-notif { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: var(--muted-light); font-weight: 600; }
+      .red-dot-live { width: 10px; height: 10px; background: #ef4444; border-radius: 50%; animation: blink 1.2s infinite; }
+
+      /* ════════════════════════════════════════════════════════
+        GUARANTEE
+      ════════════════════════════════════════════════════════ */
+      .guarantee-section { padding: 60px 0; }
+
+      .guarantee-box {
+        max-width: 660px;
+        margin: 0 auto;
+        background: var(--bg-card);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        border-radius: var(--radius-xl);
+        padding: 48px 40px;
+        text-align: center;
+        box-shadow: 0 0 80px rgba(212, 175, 55, 0.05), 0 20px 60px rgba(0, 0, 0, 0.5);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .guarantee-box::before {
+        content: "";
+        position: absolute; top: 0; left: 0; right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      }
+
+      .guarantee-badge { font-size: 4.5rem; margin-bottom: 18px; display: block; animation: float 3s ease infinite; }
+      .guarantee-box h3 { font-size: 1.35rem; font-weight: 900; margin-bottom: 14px; color: var(--off-white); }
+      .guarantee-box p { font-size: 0.9rem; color: var(--muted-light); line-height: 1.8; max-width: 460px; margin: 0 auto; }
+
+      .guarantee-points { display: flex; justify-content: center; gap: 28px; margin-top: 24px; flex-wrap: wrap; }
+      .gp { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--muted-light); font-weight: 600; }
+      .gp .gp-icon { color: var(--gold); }
+
+      /* ════════════════════════════════════════════════════════
+        SCREENSHOTS
+      ════════════════════════════════════════════════════════ */
+      .screenshots-section {
+        padding: 90px 0;
+        background: var(--bg-card);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .screenshots-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 18px;
+        margin-top: 44px;
+      }
+
+      .screenshot-card {
+        position: relative;
+        border-radius: var(--radius);
+        overflow: hidden;
+        border: 1px solid var(--border);
+        transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+        cursor: zoom-in;
+      }
+
+      .screenshot-card img { width: 100%; display: block; }
+
+      .screenshot-card:hover {
+        transform: scale(1.03) translateY(-4px);
+        border-color: var(--border-gold);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px var(--gold-glow);
+      }
+
+      .screenshot-overlay {
+        position: absolute; inset: 0;
+        background: linear-gradient(180deg, transparent 60%, rgba(0, 0, 0, 0.8) 100%);
+        display: flex;
+        align-items: flex-end;
+        padding: 14px;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .screenshot-card:hover .screenshot-overlay { opacity: 1; }
+      .screenshot-label { font-size: 0.75rem; font-weight: 700; color: var(--gold-light); }
+
+      /* ════════════════════════════════════════════════════════
+        FAQ
+      ════════════════════════════════════════════════════════ */
+      .faq-section { padding: 90px 0; }
+
+      .faq-list { margin-top: 44px; max-width: 760px; margin-inline: auto; }
+
+      .faq-item {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        margin-bottom: 10px;
+        overflow: hidden;
+        transition: border-color 0.3s, box-shadow 0.3s;
+      }
+
+      .faq-item.open {
+        border-color: var(--border-gold);
+        box-shadow: 0 0 30px rgba(212, 175, 55, 0.05);
+      }
+
+      .faq-q {
+        padding: 20px 26px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 0.93rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        user-select: none;
+        color: var(--off-white);
+      }
+
+      .faq-icon {
+        width: 30px; height: 30px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        background: rgba(212, 175, 55, 0.07);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        color: var(--gold);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        transition: transform 0.35s, background 0.3s;
+      }
+
+      .faq-item.open .faq-icon {
+        transform: rotate(45deg);
+        background: rgba(212, 175, 55, 0.15);
+      }
+
+      .faq-a {
+        max-height: 0;
+        overflow: hidden;
+        padding: 0 26px;
+        font-size: 0.87rem;
+        color: var(--muted-light);
+        line-height: 1.8;
+        transition: max-height 0.4s ease, padding 0.3s;
+      }
+
+      .faq-item.open .faq-a { max-height: 300px; padding: 0 26px 24px; }
+
+      /* ════════════════════════════════════════════════════════
+        FINAL CTA
+      ════════════════════════════════════════════════════════ */
+      .final-cta-section {
+        padding: 100px 0;
+        text-align: center;
+        background: linear-gradient(180deg, transparent, rgba(212, 175, 55, 0.03), transparent);
+      }
+
+      /* ════════════════════════════════════════════════════════
+        STICKY CTA BAR
+      ════════════════════════════════════════════════════════ */
+      .sticky-cta {
+        position: fixed; bottom: 0; left: 0; right: 0;
+        background: rgba(0, 0, 0, 0.96);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-top: 1px solid var(--border-gold);
+        padding: 12px 20px;
+        padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        z-index: 999;
+        transform: translateY(100%);
+        transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .sticky-cta.show { transform: translateY(0); }
+      .sticky-left strong { font-size: 1rem; display: block; color: var(--gold); line-height: 1.2; }
+      .sticky-left span { font-size: 0.76rem; color: var(--muted-light); }
+
+      .sticky-cta .btn-cta {
+        font-size: 0.95rem;
+        padding: 12px 26px;
+        animation: ctaPulse 2.5s infinite;
+        white-space: nowrap;
+      }
+
+      /* ════════════════════════════════════════════════════════
+        FOOTER
+      ════════════════════════════════════════════════════════ */
+      footer {
+        background: var(--bg-card);
+        border-top: 1px solid var(--border-gold);
+        padding: 36px 20px;
+        text-align: center;
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-bottom: 64px;
+      }
+
+      footer a { color: var(--gold); transition: color 0.2s; }
+      footer a:hover { color: var(--gold-light); }
+
+      .footer-logo {
+        font-size: 1.1rem;
+        font-weight: 900;
+        font-family: "IBM Plex Mono", monospace;
+        color: var(--gold);
+        margin-bottom: 12px;
+        opacity: 0.8;
+      }
+
+      /* ════════════════════════════════════════════════════════
+        KEYFRAME ANIMATIONS
+      ════════════════════════════════════════════════════════ */
+      @keyframes fadeInDown { from { opacity: 0; transform: translateY(-24px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes fadeInUp { from { opacity: 0; transform: translateY(32px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes blink { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.4); } }
+      @keyframes ping { 0% { opacity: 0.7; transform: scale(1); } 100% { opacity: 0; transform: scale(2.1); } }
+      @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+      @keyframes progressLoad { from { width: 0%; } to { width: 100%; } }
+      @keyframes shimmer { 0% { left: -100%; } 100% { left: 200%; } }
+      @keyframes slotsPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+      @keyframes gradShift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+      @keyframes btnGradShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+      @keyframes ctaPulse {
+        0%, 100% { box-shadow: 0 8px 40px var(--gold-glow); }
+        50% { box-shadow: 0 8px 60px rgba(212, 175, 55, 0.5), 0 0 0 10px rgba(212, 175, 55, 0.04); }
+      }
+
+      /* ════════════════════════════════════════════════════════
+        RESPONSIVE — Full Device Coverage
+        XL Desktop 1440+ | Desktop 1024-1440 | Tablet 769-1024
+        Mobile L 481-768 | Mobile M 361-480 | Mobile S ≤360
+      ════════════════════════════════════════════════════════ */
+
+      /* ── XL Desktop (1440px+) ── */
+      @media (min-width: 1440px) {
+        .container { max-width: 1200px; }
+        .hero h1 { font-size: 3.4rem; }
+        .chapters-grid { grid-template-columns: repeat(4, 1fr); gap: 22px; }
+        .video-reviews-grid { grid-template-columns: repeat(3, 1fr); }
+        .text-reviews-grid { grid-template-columns: repeat(3, 1fr); }
+        .screenshots-grid { grid-template-columns: repeat(4, 1fr); }
+        .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 36px; }
+        .offer-box { max-width: 820px; }
+        .ramadan-card { max-width: 820px; }
+        .vsl-wrapper { max-width: 920px; }
+      }
+
+      /* ── Standard Desktop (1280px–1439px) ── */
+      @media (min-width: 1280px) and (max-width: 1439px) {
+        .container { max-width: 1060px; }
+        .chapters-grid { grid-template-columns: repeat(4, 1fr); }
+        .video-reviews-grid { grid-template-columns: repeat(3, 1fr); }
+        .text-reviews-grid { grid-template-columns: repeat(3, 1fr); }
+        .screenshots-grid { grid-template-columns: repeat(4, 1fr); }
+        .stats-grid { grid-template-columns: repeat(3, 1fr); }
+      }
+
+      /* ── Laptop / Small Desktop (1025px–1279px) ── */
+      @media (min-width: 1025px) and (max-width: 1279px) {
+        .container { max-width: 960px; }
+        .chapters-grid { grid-template-columns: repeat(4, 1fr); gap: 14px; }
+        .video-reviews-grid { grid-template-columns: repeat(3, 1fr); }
+        .text-reviews-grid { grid-template-columns: repeat(3, 1fr); }
+        .screenshots-grid { grid-template-columns: repeat(4, 1fr); }
+        .stats-grid { grid-template-columns: repeat(3, 1fr); }
+      }
+
+      /* ── Tablet (769px–1024px) ── */
+      @media (max-width: 1024px) and (min-width: 769px) {
+        .container { padding: 0 28px; }
+        .hero { padding: 56px 0 44px; }
+        .hero h1 { font-size: 2.2rem; }
+        .chapters-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+        .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .video-reviews-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+        .text-reviews-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .screenshots-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .story-flex { gap: 36px; }
+        .story-img-box img { max-width: 340px; }
+        .offer-items { padding: 0 28px; }
+        .offer-box-header { padding: 28px 32px; }
+        .offer-footer { padding: 28px 32px; }
+        .vsl-wrapper { max-width: 700px; }
+        .pre-headline { font-size: 0.82rem; }
+      }
+
+      /* ── Large Mobile (481px–768px) ── */
+      @media (max-width: 768px) and (min-width: 481px) {
+        .container { padding: 0 20px; }
+        .hero { padding: 48px 0 40px; }
+        .hero h1 { font-size: 1.85rem; line-height: 1.3; }
+        .hero-sub { font-size: 0.95rem; }
+        .pre-headline { font-size: 0.8rem; padding: 6px 16px; max-width: 100%; text-align: center; flex-wrap: wrap; justify-content: center; }
+        .hero-trust { gap: 12px; }
+        .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .stat-num { font-size: 1.9rem; }
+        .chapters-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        .video-reviews-grid { grid-template-columns: 1fr; gap: 18px; }
+        .text-reviews-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        .screenshots-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        .story-flex { flex-direction: column-reverse; gap: 28px; }
+        .story-img-box { width: 100%; min-width: unset; }
+        .img-badge { position: static; margin-top: 14px; display: inline-block; }
+        .offer-items { padding: 0 20px; }
+        .offer-box-header { padding: 24px 20px; }
+        .offer-footer { padding: 26px 20px; }
+        .offer-item { gap: 14px; }
+        .price-main-box { flex-direction: column; gap: 12px; text-align: center; }
+        .ramadan-card { padding: 22px; margin: 30px auto; }
+        .ramadan-card h3 { font-size: 1.35rem; }
+        .price-amount { font-size: 2.4rem; }
+        .countdown-num { width: 62px; height: 62px; font-size: 1.8rem; }
+        .section-title { font-size: 1.5rem; }
+        .btn-cta { padding: 16px 32px; font-size: 1.05rem; }
+        .sticky-cta { flex-direction: column; align-items: stretch; text-align: center; padding: 12px 16px; gap: 10px; }
+        .sticky-cta .btn-cta { width: 100%; font-size: 1rem; padding: 14px; }
+        .guarantee-box { padding: 36px 24px; }
+        .faq-q { padding: 18px 20px; }
+        .faq-a { padding: 0 20px; }
+        .faq-item.open .faq-a { padding: 0 20px 20px; }
+        .vsl-wrapper { border-radius: 14px; }
+        .urgency-topbar { font-size: 0.82rem; padding: 9px 14px; flex-wrap: wrap; }
+      }
+
+      /* ── Standard Mobile (361px–480px) ── */
+      @media (max-width: 480px) {
+        .container { padding: 0 14px; }
+        .hero { padding: 40px 0 32px; }
+        .hero h1 { font-size: 1.55rem; line-height: 1.3; }
+        .hero-sub { font-size: 0.9rem; margin-bottom: 22px; }
+        .pre-headline {
+          font-size: 0.75rem; padding: 6px 12px;
+          text-align: center; line-height: 1.5;
+          white-space: normal; max-width: 100%;
+          flex-wrap: wrap; justify-content: center;
+        }
+        .hero-trust { gap: 8px; flex-wrap: wrap; justify-content: center; }
+        .trust-chip { font-size: 0.75rem; }
+        .stats-bar { padding: 26px 0; }
+        .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        .stat-num { font-size: 1.65rem; }
+        .stat-label { font-size: 0.72rem; }
+        .tools-stripe { padding: 28px 0; }
+        .tool-chip { font-size: 0.76rem; padding: 6px 12px; }
+        .tools-list { gap: 8px 10px; }
+        .reviews-section, .story-section, .chapters-section, .offer-section,
+        .screenshots-section, .faq-section { padding: 50px 0; }
+        .guarantee-section { padding: 36px 0; }
+        .final-cta-section { padding: 56px 0; }
+        .section-title { font-size: 1.3rem; }
+        .section-sub { font-size: 0.86rem; }
+        .section-eyebrow { font-size: 0.68rem; letter-spacing: 2px; }
+        .chapters-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 28px; }
+        .chapter-card { padding: 18px 12px; border-radius: 12px; }
+        .chapter-card h3 { font-size: 0.8rem; }
+        .chapter-card p { font-size: 0.72rem; }
+        .ch-num { width: 36px; height: 36px; border-radius: 10px; font-size: 0.78rem; margin-bottom: 10px; }
+        .chapter-lessons { font-size: 0.64rem; padding: 2px 8px; }
+        .video-reviews-grid { grid-template-columns: 1fr; gap: 14px; margin-top: 24px; }
+        .text-reviews-grid { grid-template-columns: 1fr; gap: 12px; }
+        .text-review-card { padding: 16px 14px; }
+        .review-text { font-size: 0.85rem; }
+        .story-flex { flex-direction: column-reverse; gap: 24px; }
+        .story-img-box { width: 100%; min-width: unset; }
+        .img-badge { position: static; margin-top: 12px; display: inline-block; }
+        .story-body { font-size: 0.86rem; }
+        .pain-point { font-size: 0.83rem; }
+        .offer-box { border-radius: 16px; }
+        .offer-box-header { padding: 20px 16px; }
+        .offer-box-header h2 { font-size: 1.1rem; }
+        .offer-box-header p { font-size: 0.82rem; }
+        .offer-items { padding: 0 16px; }
+        .offer-footer { padding: 20px 16px; }
+        .offer-item { flex-direction: column; align-items: flex-start; gap: 10px; padding: 14px 0; }
+        .offer-item-left { gap: 10px; }
+        .offer-icon { width: 36px; height: 36px; font-size: 0.95rem; border-radius: 10px; }
+        .offer-item h4 { font-size: 0.83rem; }
+        .offer-item p { font-size: 0.72rem; }
+        .offer-value { font-size: 0.82rem; }
+        .bonus-tag { font-size: 0.6rem; padding: 2px 7px; }
+        .price-big { font-size: 2.8rem; }
+        .price-currency { font-size: 1rem; padding-top: 10px; }
+        .price-period { font-size: 0.73rem; }
+        .total-value-row { font-size: 0.82rem; }
+        .scarcity-note { font-size: 0.78rem; padding: 7px 12px; }
+        .slots-bar { max-width: 100%; }
+        .countdown-num { width: 52px; height: 52px; font-size: 1.5rem; border-radius: 10px; letter-spacing: 1px; }
+        .countdown-sep { font-size: 1.5rem; margin-bottom: 12px; }
+        .countdown-block { gap: 4px; }
+        .countdown-unit-label { font-size: 0.58rem; }
+        .countdown-label { font-size: 0.78rem; }
+        .ramadan-card { padding: 18px 16px; margin: 24px auto; border-radius: 18px; }
+        .ramadan-card h3 { font-size: 1.15rem; }
+        .price-sub-desc { font-size: 0.83rem; }
+        .price-main-box { flex-direction: column; gap: 10px; text-align: center; padding: 16px 18px; }
+        .price-amount { font-size: 2rem; }
+        .price-right-side .label { font-size: 0.9rem; }
+        .price-right-side .sub-label { font-size: 0.75rem; }
+        .progress-labels { font-size: 0.85rem; }
+        .urgency-badge-light { font-size: 0.88rem; padding: 12px; }
+        .live-notif { font-size: 0.83rem; }
+        .guarantee-box { padding: 28px 16px; border-radius: 18px; }
+        .guarantee-badge { font-size: 3rem; }
+        .guarantee-box h3 { font-size: 1.05rem; }
+        .guarantee-box p { font-size: 0.83rem; }
+        .guarantee-points { gap: 12px; flex-direction: column; align-items: center; }
+        .gp { font-size: 0.78rem; }
+        .screenshots-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 24px; }
+        .faq-list { margin-top: 24px; }
+        .faq-q { padding: 15px 16px; font-size: 0.84rem; gap: 10px; }
+        .faq-a { padding: 0 16px; font-size: 0.8rem; }
+        .faq-item.open .faq-a { padding: 0 16px 16px; }
+        .faq-icon { width: 28px; height: 28px; font-size: 16px; }
+        .btn-cta { padding: 14px 24px; font-size: 0.98rem; border-radius: 100px; }
+        .cta-sub-note { font-size: 0.74rem; gap: 8px; }
+        .sticky-cta {
+          flex-direction: column; align-items: stretch; text-align: center;
+          padding: 10px 12px; gap: 8px;
+          padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+        }
+        .sticky-cta .btn-cta { width: 100%; font-size: 0.96rem; padding: 13px; }
+        .sticky-left strong { font-size: 0.88rem; }
+        .sticky-left span { font-size: 0.72rem; }
+        .urgency-topbar { font-size: 0.76rem; padding: 8px 10px; gap: 6px; flex-wrap: wrap; }
+        .urgency-topbar .timer-inline { font-size: 0.85rem; padding: 2px 9px; letter-spacing: 1.5px; }
+        .vsl-wrapper { border-radius: 12px; margin-bottom: 22px; }
+        .vsl-bar { font-size: 0.75rem; padding: 10px 12px; }
+        .play-ring { width: 68px; height: 68px; }
+        .vsl-label strong { font-size: 0.95rem; }
+        .vsl-label span { font-size: 0.78rem; }
+        footer { padding: 28px 16px; margin-bottom: 72px; }
+        .footer-logo { font-size: 0.95rem; }
+      }
+
+      /* ── Small Mobile (≤360px) ── */
+      @media (max-width: 360px) {
+        .hero h1 { font-size: 1.35rem; }
+        .chapters-grid { grid-template-columns: 1fr; gap: 10px; }
+        .screenshots-grid { grid-template-columns: 1fr; }
+        .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        .countdown-num { width: 46px; height: 46px; font-size: 1.3rem; }
+        .btn-cta { font-size: 0.92rem; padding: 13px 18px; }
+        .offer-box-header h2 { font-size: 1rem; }
+        .section-title { font-size: 1.15rem; }
+        .price-big { font-size: 2.4rem; }
+        .pre-headline { font-size: 0.72rem; }
+        .text-reviews-grid { grid-template-columns: 1fr; }
+        .hero-trust { flex-direction: column; align-items: center; gap: 6px; }
+        .countdown-block { gap: 3px; }
+        .countdown-sep { font-size: 1.3rem; }
+        .guarantee-points { flex-direction: column; gap: 8px; }
+        .ramadan-card { padding: 14px 12px; }
+        .price-amount { font-size: 1.8rem; }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- ════════════════════════════════════════
      URGENCY TOP BAR
-════════════════════════════════════════ -->
-<div class="urgency-topbar">
-  🔥 الخصم 50% ينتهي بعد:
-  <span class="timer-inline" id="topTimer">05:00:00</span>
-  — اشترك الآن قبل عودة السعر الأصلي!
-</div>
+    ════════════════════════════════════════ -->
+    <div class="urgency-topbar">
+      🔥 الخصم 50% ينتهي بعد:
+      <span class="timer-inline" id="topTimer">05:00:00</span>
+      — اشترك الآن قبل عودة السعر الأصلي!
+    </div>
 
-
-<!-- ════════════════════════════════════════
+    <!-- ════════════════════════════════════════
      HERO SECTION
-════════════════════════════════════════ -->
-<header class="hero" id="top">
-  <div class="hero-glow"></div>
-  <div class="container">
+    ════════════════════════════════════════ -->
+    <header class="hero" id="top">
+      <div class="hero-glow"></div>
+      <div class="container">
+        <div class="pre-headline">
+          <span class="dot-live"></span>
+          القواعد اتغيرت, يا إما يتم استبدالك بالذكاء الاصطناعي، يا إما تخليه يشتغل لحسابك علطول
+        </div>
 
-    <!-- Pre-headline badge -->
-    <div class="pre-headline">
-      <span class="dot-live"></span>
-      ⚠️ تنبيه: هذه المعلومة يُخفونها عنك — وهي تكلّفك مالاً كل يوم
-    </div>
+        <h1>
+          استغل ثورة الـ AI في 2026 وابني سيستم يحققلك
+          <span class="gold">50,000 جنيه شهريًا</span><br />
+        </h1>
 
-    <!-- Main headline -->
-    <h1>
-      استغل ثورة الـ AI في 2026 وابني مصدر دخل يوصل
-      <span class="blue"> ـ 50,000 جنيه شهريًا</span><br>
-      حتى لو أنت تسمع عن المجال لأول مرة —
-      <span class="green">بدون سطر برمجة واحد</span>
-    </h1>
+        <p class="hero-sub">
+          اكتشف الطريقة الى يستخدمها خبراء الـ AI لبناء أنظمة تعمل بدلا عنهم وتجلب عملاء
+        </p>
 
-    <!-- Sub-headline -->
-    <p class="hero-sub">
-      اكتشف الطريقة الوحيدة التي يستخدمها خبراء الـ AI اليوم لبناء أنظمة تعمل بدلاً عنهم وتجلب عملاء حقيقيين — بأدوات مثل n8n، Make، وAI Agents.
-    </p>
+        <div class="hero-trust">
+          <span class="trust-chip"><span class="tc-icon">✅</span> بدون برمجة</span>
+          <span class="trust-chip"><span class="tc-icon">✅</span> بدون أي خبرة سابقة</span>
+          <span class="trust-chip"><span class="tc-icon">✅</span> بدون لابتوب غالي</span>
+        </div>
 
-    <!-- Trust signals row -->
-    <div class="hero-trust">
-      <span class="trust-chip"><span class="tc-icon">✅</span> بدون برمجة</span>
-      <span class="trust-chip"><span class="tc-icon">✅</span> وصول مدى الحياة</span>
-      <span class="trust-chip"><span class="tc-icon">✅</span> ضمان 7 أيام</span>
-      <span class="trust-chip"><span class="tc-icon">✅</span> +1,200 طالب</span>
-    </div>
-
-    <!-- VSL Video -->
-    <div class="vsl-wrapper">
-      <div class="vsl-progress"></div>
-      <div class="vsl-frame">
-
-        <!-- Thumbnail overlay — replaced by iframe on click -->
-        <div class="vsl-thumb-overlay" id="vslCover" onclick="activateVSL()">
-          <span class="vsl-bg-logo">AI</span>
-          <div style="position:relative;z-index:1;text-align:center;display:flex;flex-direction:column;align-items:center;gap:22px;">
-            <div class="play-ring">
-              <div class="play-btn-inner">
-                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        <div class="vsl-wrapper">
+          <div class="vsl-progress"></div>
+          <div class="vsl-frame">
+            <div class="vsl-thumb-overlay" id="vslCover" onclick="activateVSL()">
+              <span class="vsl-bg-logo">AI</span>
+              <div style="position:relative;z-index:1;text-align:center;display:flex;flex-direction:column;align-items:center;gap:22px;">
+                <div class="play-ring">
+                  <div class="play-btn-inner">
+                    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                  </div>
+                </div>
+                <div class="vsl-label">
+                  <strong>شاهد الفيديو الآن — المدة: 12 دقيقة</strong>
+                  <span>ستعرف بعد 3 دقائق لماذا هذا قرار يغيّر حياتك</span>
+                </div>
               </div>
             </div>
-            <div class="vsl-label">
-              <strong>شاهد الفيديو الآن — المدة: 12 دقيقة</strong>
-              <span>ستعرف بعد 3 دقائق لماذا هذا قرار يغيّر حياتك</span>
-            </div>
+            <iframe id="vslIframe" src="about:blank" data-src="https://player.vimeo.com/video/YOUR_VIDEO_ID?autoplay=1" allow="autoplay; fullscreen" allowfullscreen style="display:none;"></iframe>
           </div>
         </div>
 
-        <!-- Lazy-loaded iframe -->
-        <iframe id="vslIframe"
-          src="about:blank"
-          data-src="https://player.vimeo.com/video/YOUR_VIDEO_ID?autoplay=1&color=4F46E5"
-          allow="autoplay; fullscreen"
-          allowfullscreen
-          style="display:none;">
-        </iframe>
+        <div style="text-align:center;" id="heroCta">
+          <a href="#offer" class="btn-cta">🚀 أريد الانضمام للأطلس الآن</a>
+          <div class="cta-sub-note">
+            <span class="note-item">🔒 دفع آمن 100%</span>
+            <span class="note-item"><span>✅ ضمان استرداد 3 أيام</span></span>
+            <span class="note-item">⚡ وصول فوري بعد الدفع</span>
+          </div>
+        </div>
       </div>
+    </header>
 
-      <div class="vsl-bar">
-        ⚠️ <strong>مهم:</strong> شاهد الفيديو كاملاً قبل الشراء — في الدقيقة السابعة يوجد مفاجأة حصرية للمشاهدين فقط.
-      </div>
-    </div>
-
-    <!-- Primary CTA -->
-    <div style="text-align:center;" id="heroCta">
-      <a href="#offer" class="btn-cta">
-        🚀 أريد الانضمام للأطلس الآن
-      </a>
-      <div class="cta-sub-note">
-        <span class="note-item">🔒 دفع آمن 100%</span>
-        <span class="note-item"><span class="green">✅ ضمان استرداد 7 أيام</span></span>
-        <span class="note-item">⚡ وصول فوري بعد الدفع</span>
-      </div>
-    </div>
-
-  </div>
-</header>
-
-
-<!-- ════════════════════════════════════════
+    <!-- ════════════════════════════════════════
      STATS BAR
-════════════════════════════════════════ -->
-<div class="full-stripe stats-bar">
-  <div class="container">
-    <div class="stats-grid">
-      <div class="stat-item">
-        <div class="stat-num">+<span class="accent">1,200</span></div>
-        <div class="stat-label">طالب ملتحق بالبرنامج</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num">30+</div>
-        <div class="stat-label">ساعة فيديو تدريبي</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num"><span class="accent">$</span>500</div>
-        <div class="stat-label">متوسط قيمة أول صفقة للمتدربين</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num">4.9</div>
-        <div class="stat-label">تقييم المتدربين ⭐</div>
+    ════════════════════════════════════════ -->
+    <div class="full-stripe stats-bar">
+      <div class="container">
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-num">+<span class="accent">1,200</span></div>
+            <div class="stat-label">طالب ملتحق بالبرنامج</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">30+</div>
+            <div class="stat-label">ساعة فيديو تدريبي</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">⭐5/5</div>
+            <div class="stat-label">من تقييم اكثر من 30 مشترك</div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
-
-<!-- ════════════════════════════════════════
+    <!-- ════════════════════════════════════════
      TOOLS STRIPE
-════════════════════════════════════════ -->
-<div class="full-stripe tools-stripe">
-  <div class="container">
-    <p class="tools-label">الأدوات التي ستتقنها وتعرضها كوكالة أتمتة</p>
-    <div class="tools-list">
-      <span class="tool-chip"><span class="icon">🤖</span> n8n</span>
-      <span class="tool-chip"><span class="icon">🧠</span> OpenAI / ChatGPT</span>
-      <span class="tool-chip"><span class="icon">⚡</span> Relevance AI</span>
-      <span class="tool-chip"><span class="icon">🔗</span> Make (Integromat)</span>
-      <span class="tool-chip"><span class="icon">📊</span> Airtable</span>
-      <span class="tool-chip"><span class="icon">💬</span> WhatsApp API</span>
-      <span class="tool-chip"><span class="icon">🔀</span> Zapier</span>
-      <span class="tool-chip"><span class="icon">🌐</span> Notion AI</span>
-    </div>
-  </div>
-</div>
-
-
-<!-- ════════════════════════════════════════
-     VIDEO TESTIMONIALS / REVIEWS
-════════════════════════════════════════ -->
-<section class="reviews-section">
-  <div class="container">
-    <div class="centered">
-      <span class="section-eyebrow">آراء المشتركين</span>
-      <div class="section-divider"></div>
-      <h2 class="section-title">قصص نجاح حقيقية <span style="color:var(--indigo-light)">لناس بدأت من الصفر</span></h2>
-      <p class="section-sub">متاخدش بكلامنا — اسمع بنفسك من الناس اللي حققت أرباح بعد تطبيق النظام.</p>
-    </div>
-
-    <!-- Video testimonials -->
-    <div class="video-reviews-grid">
-      <div class="review-video-card">
-        <div class="vsl-frame">
-          <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen loading="lazy"></iframe>
+    ════════════════════════════════════════ -->
+    <div class="full-stripe tools-stripe">
+      <div class="container">
+        <p class="tools-label">الأدوات التي ستتقنها وتعرضها كوكالة أتمتة</p>
+        <div class="tools-list">
+          <span class="tool-chip"><span class="icon">🤖</span> n8n</span>
+          <span class="tool-chip"><span class="icon">🧠</span> OpenAI / ChatGPT</span>
+          <span class="tool-chip"><span class="icon">⚡</span> Relevance AI</span>
+          <span class="tool-chip"><span class="icon">🔗</span> Make (Integromat)</span>
+          <span class="tool-chip"><span class="icon">📊</span> Airtable</span>
+          <span class="tool-chip"><span class="icon">💬</span> WhatsApp API</span>
+          <span class="tool-chip"><span class="icon">🔀</span> Zapier</span>
+          <span class="tool-chip"><span class="icon">🌐</span> Notion AI</span>
         </div>
-        <div class="vsl-bar"><strong>أحمد محمود، القاهرة:</strong> "جبت أول عميل بـ 500 دولار بعد أسبوعين فقط"</div>
-      </div>
-
-      <div class="review-video-card">
-        <div class="vsl-frame">
-          <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen loading="lazy"></iframe>
-        </div>
-        <div class="vsl-bar"><strong>مصطفى كمال، الإسكندرية:</strong> "سبت وظيفتي وركزت في الـ AI وكسبت الضعف"</div>
-      </div>
-
-      <div class="review-video-card">
-        <div class="vsl-frame">
-          <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen loading="lazy"></iframe>
-        </div>
-        <div class="vsl-bar"><strong>سارة عبد الله، الرياض:</strong> "كنت بصفر خبرة — دلوقتي عندي 3 عملاء شهريين"</div>
       </div>
     </div>
 
-    <!-- Text testimonials -->
-    <div class="text-reviews-grid">
-      <div class="text-review-card">
-        <div class="stars">★★★★★</div>
-        <p class="review-text">"الكورس ده غيّر تفكيري بالكامل. بدأت أشوف الشركات من حواليا كعملاء محتملين وأفهم إيه المشكلة اللي ممكن أحلّها بالـ AI."</p>
-        <div class="reviewer-info">
-          <div class="reviewer-avatar">ك</div>
-          <div>
-            <div class="reviewer-name">كريم يوسف</div>
-            <div class="reviewer-role">صاحب وكالة أتمتة — القاهرة</div>
+    <!-- ════════════════════════════════════════
+     VIDEO TESTIMONIALS
+    ════════════════════════════════════════ -->
+    <section class="reviews-section">
+      <div class="container">
+        <div class="centered">
+          <span class="section-eyebrow">آراء المشتركين</span>
+          <div class="section-divider"></div>
+          <h2 class="section-title">قصص نجاح حقيقية <span style="color:var(--gold)">لناس بدأت من الصفر</span></h2>
+          <p class="section-sub">متاخدش بكلامنا — اسمع بنفسك من الناس اللي حققت أرباح بعد تطبيق النظام.</p>
+        </div>
+
+        <div class="video-reviews-grid">
+          <div class="review-video-card">
+            <div class="vsl-frame">
+              <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen loading="lazy"></iframe>
+            </div>
+            <div class="vsl-bar"><strong>أحمد محمود، القاهرة:</strong> "جبت أول عميل بـ 500 دولار بعد أسبوعين فقط"</div>
+          </div>
+          <div class="review-video-card">
+            <div class="vsl-frame">
+              <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen loading="lazy"></iframe>
+            </div>
+            <div class="vsl-bar"><strong>مصطفى كمال، الإسكندرية:</strong> "سبت وظيفتي وركزت في الـ AI وكسبت الضعف"</div>
+          </div>
+          <div class="review-video-card">
+            <div class="vsl-frame">
+              <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen loading="lazy"></iframe>
+            </div>
+            <div class="vsl-bar"><strong>سارة عبد الله، الرياض:</strong> "كنت بصفر خبرة — دلوقتي عندي 3 عملاء شهريين"</div>
+          </div>
+        </div>
+
+        <div class="text-reviews-grid">
+          <div class="text-review-card">
+            <div class="stars">★★★★★</div>
+            <p class="review-text">"الكورس ده غيّر تفكيري بالكامل. بدأت أشوف الشركات من حواليا كعملاء محتملين وأفهم إيه المشكلة اللي ممكن أحلّها بالـ AI."</p>
+            <div class="reviewer-info">
+              <div class="reviewer-avatar">ك</div>
+              <div>
+                <div class="reviewer-name">كريم يوسف</div>
+                <div class="reviewer-role">صاحب وكالة أتمتة — القاهرة</div>
+              </div>
+            </div>
+          </div>
+          <div class="text-review-card">
+            <div class="stars">★★★★★</div>
+            <p class="review-text">"أنا بصراحة كنت محتاج كورس زي ده من سنة. الأدوات تعبانة بدون السياق الصح. المحتوى عملي جداً ومفيش فلسفة فاضية."</p>
+            <div class="reviewer-info">
+              <div class="reviewer-avatar">م</div>
+              <div>
+                <div class="reviewer-name">محمد فارس</div>
+                <div class="reviewer-role">مستقل — مصر</div>
+              </div>
+            </div>
+          </div>
+          <div class="text-review-card">
+            <div class="stars">★★★★★</div>
+            <p class="review-text">"كنت خايفة من الـ AI وحاسة إنه معقد. بعد أسبوع من الكورس عملت أول workflow ناجح وشليت إيميلات كتير من شغلي اليومي."</p>
+            <div class="reviewer-info">
+              <div class="reviewer-avatar">ن</div>
+              <div>
+                <div class="reviewer-name">نور الهدى</div>
+                <div class="reviewer-role">موظفة تحوّلت لمستقلة — الإمارات</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+    </section>
 
-      <div class="text-review-card">
-        <div class="stars">★★★★★</div>
-        <p class="review-text">"أنا بصراحة كنت محتاج كورس زي ده من سنة. الأدوات تعبانة بدون السياق الصح. المحتوى عملي جداً ومفيش فلسفة فاضية."</p>
-        <div class="reviewer-info">
-          <div class="reviewer-avatar">م</div>
-          <div>
-            <div class="reviewer-name">محمد فارس</div>
-            <div class="reviewer-role">مستقل — مصر</div>
+    <!-- ════════════════════════════════════════
+     ORIGIN STORY
+    ════════════════════════════════════════ -->
+    <section class="story-section">
+      <div class="container">
+        <div class="story-flex">
+          <div class="story-content">
+            <span class="section-eyebrow">القصة وراء الأطلس</span>
+            <div class="section-divider"></div>
+            <h2 class="section-title">ليه عملت الكورس ده؟</h2>
+            <p class="story-body">من كام سنة، كنت زيّك بالظبط — بحاول ألاقي طريقة أزود بيها دخلي. جربت البرمجة، الجرافيك، التسويق... لكن كنت دايماً بحس إن الوقت بيسبقني والمنافسة شرسة.</p>
+            <p class="story-body">إيه المشاكل اللي كانت بتقتل أي فرصة عندي؟</p>
+            <ul class="pain-points">
+              <li class="pain-point"><span class="pain-icon">✕</span> الشركات محتاجة مساعدة بس مش عارفة من أين تبدأ مع الـ AI</li>
+              <li class="pain-point"><span class="pain-icon">✕</span> الكورسات الموجودة إما فنية جداً أو فاضية من الناحية العملية</li>
+              <li class="pain-point"><span class="pain-icon">✕</span> الناس بتضيع وقتها تتعلم أدوات بدون ما تعرف تبيعها</li>
+              <li class="pain-point"><span class="pain-icon">✕</span> سوق الـ AI بينمو بسرعة — والمتأخر بيخسر فرص دهبية</li>
+            </ul>
+            <p class="story-body">لحد ما اكتشفت عالم الأتمتة والذكاء الاصطناعي. قدرت أبني <strong>"موظفين آليين"</strong> بيشتغلوا 24 ساعة بدون توقف للشركات وأضاعف دخلي في نص الوقت. هنا قررت أجمع كل خبرتي في الـ <strong>AI Automation Atlas</strong> — عشان أوفر عليك سنين من التوهان.</p>
+          </div>
+
+          <div class="story-img-box">
+            <img src="https://via.placeholder.com/420x480/0a0800/D4AF37?text=صورة+المدرب" alt="صورة المدرب" />
+            <div class="img-badge">
+              <div class="badge-num">50K</div>
+              <div class="badge-label">جنيه / شهر</div>
+            </div>
           </div>
         </div>
       </div>
+    </section>
 
-      <div class="text-review-card">
-        <div class="stars">★★★★★</div>
-        <p class="review-text">"كنت خايفة من الـ AI وحاسة إنه معقد. بعد أسبوع من الكورس عملت أول workflow ناجح وشليت إيميلات كتير من شغلي اليومي."</p>
-        <div class="reviewer-info">
-          <div class="reviewer-avatar">ن</div>
-          <div>
-            <div class="reviewer-name">نور الهدى</div>
-            <div class="reviewer-role">موظفة تحوّلت لمستقلة — الإمارات</div>
-          </div>
+    <!-- ════════════════════════════════════════
+     COURSE MODULES
+    ════════════════════════════════════════ -->
+    <section class="chapters-section" id="modules">
+      <div class="container">
+        <div class="centered">
+          <span class="section-eyebrow">خريطة الطريق الكاملة</span>
+          <div class="section-divider"></div>
+          <h2 class="section-title">هتتعلم إيه جوا <span style="color:var(--gold)">الأطلس؟</span></h2>
+          <p class="section-sub">8 موديولات مرتبة بشكل تدريجي — من المبتدئ لحد ما تلاقي أول عميل بدفع شهري.</p>
+        </div>
+
+        <div class="chapters-grid">
+          <div class="chapter-card"><span class="ch-num">01</span><h3>تأسيس الوكالة والـ Mindset</h3><p>إزاي تفكر كأوتوميشن إكسبيرت وتشوف الفرص اللي حواليك كل يوم.</p><span class="chapter-lessons">📚 6 دروس</span></div>
+          <div class="chapter-card"><span class="ch-num">02</span><h3>اختيار النيتش المربح</h3><p>كيف تختار تخصص يجلب عملاء مستعدين يدفعوا لك $500–$2000 شهرياً.</p><span class="chapter-lessons">📚 5 دروس</span></div>
+          <div class="chapter-card"><span class="ch-num">03</span><h3>إتقان n8n & Make</h3><p>بناء سيناريوهات الأتمتة الكاملة — ربط التطبيقات ببعضها بدون كود.</p><span class="chapter-lessons">📚 10 دروس</span></div>
+          <div class="chapter-card"><span class="ch-num">04</span><h3>بناء AI Agents الذكية</h3><p>روبوتات تردّ على العملاء وتاخد قرارات وتعمل مهام — أوتوماتيك تماماً.</p><span class="chapter-lessons">📚 8 دروس</span></div>
+          <div class="chapter-card"><span class="ch-num">05</span><h3>ربط WhatsApp + CRM</h3><p>أتمتة المبيعات والتواصل مع العملاء عبر واتساب بشكل احترافي.</p><span class="chapter-lessons">📚 6 دروس</span></div>
+          <div class="chapter-card"><span class="ch-num">06</span><h3>صياغة العرض المثالي</h3><p>إزاي تقدم قيمتك للشركات بطريقة تخليهم يقولوا "أيمتى نبدأ؟"</p><span class="chapter-lessons">📚 5 دروس</span></div>
+          <div class="chapter-card"><span class="ch-num">07</span><h3>صيد العملاء بالدولار</h3><p>استراتيجيات مجربة تجلب أول 3 عملاء بدفع شهري متكرر.</p><span class="chapter-lessons">📚 7 دروس</span></div>
+          <div class="chapter-card"><span class="ch-num">08</span><h3>التوسع والاسترخاء</h3><p>إزاي تشغّل وكالتك على أوتوبايلوت وتزيد دخلك بدون ما تزيد ساعات شغلك.</p><span class="chapter-lessons">📚 6 دروس</span></div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-
-<!-- ════════════════════════════════════════
-     ORIGIN STORY / PROBLEM-SOLUTION
-════════════════════════════════════════ -->
-<section class="story-section">
-  <div class="container">
-    <div class="story-flex">
-
-      <div class="story-content">
-        <span class="section-eyebrow">القصة وراء الأطلس</span>
-        <div class="section-divider"></div>
-        <h2 class="section-title">ليه عملت الكورس ده؟</h2>
-
-        <p class="story-body">
-          من كام سنة، كنت زيّك بالظبط — بحاول ألاقي طريقة أزود بيها دخلي. جربت البرمجة، الجرافيك، التسويق... لكن كنت دايماً بحس إن الوقت بيسبقني والمنافسة شرسة.
-        </p>
-
-        <p class="story-body">إيه المشاكل اللي كانت بتقتل أي فرصة عندي؟</p>
-
-        <ul class="pain-points">
-          <li class="pain-point">
-            <span class="pain-icon">✕</span>
-            الشركات محتاجة مساعدة بس مش عارفة من أين تبدأ مع الـ AI
-          </li>
-          <li class="pain-point">
-            <span class="pain-icon">✕</span>
-            الكورسات الموجودة إما فنية جداً أو فاضية من الناحية العملية
-          </li>
-          <li class="pain-point">
-            <span class="pain-icon">✕</span>
-            الناس بتضيع وقتها تتعلم أدوات بدون ما تعرف تبيعها
-          </li>
-          <li class="pain-point">
-            <span class="pain-icon">✕</span>
-            سوق الـ AI بينمو بسرعة — والمتأخر بيخسر فرص دهبية
-          </li>
-        </ul>
-
-        <p class="story-body">
-          لحد ما اكتشفت عالم الأتمتة والذكاء الاصطناعي. قدرت أبني <strong>"موظفين آليين"</strong> بيشتغلوا 24 ساعة بدون توقف للشركات وأضاعف دخلي في نص الوقت.
-          هنا قررت أجمع كل خبرتي في الـ <strong>AI Automation Atlas</strong> — عشان أوفر عليك سنين من التوهان.
-        </p>
-      </div>
-
-      <div class="story-img-box">
-        <img src="https://via.placeholder.com/420x480/0e0e1a/4F46E5?text=صورة+المدرب" alt="صورة المدرب" />
-        <div class="img-badge">
-          <div class="badge-num">50K</div>
-          <div class="badge-label">جنيه / شهر</div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-
-<!-- ════════════════════════════════════════
-     COURSE MODULES / CHAPTERS
-════════════════════════════════════════ -->
-<section class="chapters-section" id="modules">
-  <div class="container">
-    <div class="centered">
-      <span class="section-eyebrow">خريطة الطريق الكاملة</span>
-      <div class="section-divider"></div>
-      <h2 class="section-title">هتتعلم إيه جوا <span style="color:var(--green)">الأطلس؟</span></h2>
-      <p class="section-sub">8 موديولات مرتبة بشكل تدريجي — من المبتدئ لحد ما تلاقي أول عميل بدفع شهري.</p>
-    </div>
-
-    <div class="chapters-grid">
-      <div class="chapter-card">
-        <span class="ch-num">01</span>
-        <h3>تأسيس الوكالة والـ Mindset</h3>
-        <p>إزاي تفكر كأوتوميشن إكسبيرت وتشوف الفرص اللي حواليك كل يوم.</p>
-        <span class="chapter-lessons">📚 6 دروس</span>
-      </div>
-
-      <div class="chapter-card">
-        <span class="ch-num">02</span>
-        <h3>اختيار النيتش المربح</h3>
-        <p>كيف تختار تخصص يجلب عملاء مستعدين يدفعوا لك $500–$2000 شهرياً.</p>
-        <span class="chapter-lessons">📚 5 دروس</span>
-      </div>
-
-      <div class="chapter-card">
-        <span class="ch-num">03</span>
-        <h3>إتقان n8n & Make</h3>
-        <p>بناء سيناريوهات الأتمتة الكاملة — ربط التطبيقات ببعضها بدون كود.</p>
-        <span class="chapter-lessons">📚 10 دروس</span>
-      </div>
-
-      <div class="chapter-card">
-        <span class="ch-num">04</span>
-        <h3>بناء AI Agents الذكية</h3>
-        <p>روبوتات تردّ على العملاء وتاخد قرارات وتعمل مهام — أوتوماتيك تماماً.</p>
-        <span class="chapter-lessons">📚 8 دروس</span>
-      </div>
-
-      <div class="chapter-card">
-        <span class="ch-num">05</span>
-        <h3>ربط WhatsApp + CRM</h3>
-        <p>أتمتة المبيعات والتواصل مع العملاء عبر واتساب بشكل احترافي.</p>
-        <span class="chapter-lessons">📚 6 دروس</span>
-      </div>
-
-      <div class="chapter-card">
-        <span class="ch-num">06</span>
-        <h3>صياغة العرض المثالي</h3>
-        <p>إزاي تقدم قيمتك للشركات بطريقة تخليهم يقولوا "أيمتى نبدأ؟"</p>
-        <span class="chapter-lessons">📚 5 دروس</span>
-      </div>
-
-      <div class="chapter-card">
-        <span class="ch-num">07</span>
-        <h3>صيد العملاء بالدولار</h3>
-        <p>استراتيجيات مجربة تجلب أول 3 عملاء بدفع شهري متكرر.</p>
-        <span class="chapter-lessons">📚 7 دروس</span>
-      </div>
-
-      <div class="chapter-card">
-        <span class="ch-num">08</span>
-        <h3>التوسع والاسترخاء</h3>
-        <p>إزاي تشغّل وكالتك على أوتوبايلوت وتزيد دخلك بدون ما تزيد ساعات شغلك.</p>
-        <span class="chapter-lessons">📚 6 دروس</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<!-- ════════════════════════════════════════
+    <!-- ════════════════════════════════════════
      OFFER + URGENCY + VALUE STACK
-════════════════════════════════════════ -->
-<section class="offer-section" id="offer">
-  <div class="container">
-    <div class="centered" style="margin-bottom:50px;">
-      <span class="section-eyebrow">العرض المحدود</span>
-      <div class="section-divider"></div>
-      <h2 class="section-title">احجز مقعدك قبل ارتفاع السعر</h2>
-      <p class="section-sub">العرض ده بينتهي في غضون ساعات — السعر بيرجع للأصل بدون إنذار.</p>
-    </div>
-
-    <!-- Countdown block -->
-    <div class="countdown-wrap" style="margin-bottom:40px;">
-      <div class="countdown-label">⏳ ينتهي العرض بعد:</div>
-      <div class="countdown-block">
-        <div class="countdown-unit">
-          <div class="countdown-num" id="cdHours">04</div>
-          <div class="countdown-unit-label">ساعة</div>
+    ════════════════════════════════════════ -->
+    <section class="offer-section" id="offer">
+      <div class="container">
+        <div class="centered" style="margin-bottom:50px;">
+          <span class="section-eyebrow">العرض المحدود</span>
+          <div class="section-divider"></div>
+          <h2 class="section-title">احجز مقعدك قبل ارتفاع السعر</h2>
+          <p class="section-sub">العرض ده بينتهي في غضون ساعات — السعر بيرجع للأصل بدون إنذار.</p>
         </div>
-        <div class="countdown-sep">:</div>
-        <div class="countdown-unit">
-          <div class="countdown-num" id="cdMins">59</div>
-          <div class="countdown-unit-label">دقيقة</div>
-        </div>
-        <div class="countdown-sep">:</div>
-        <div class="countdown-unit">
-          <div class="countdown-num" id="cdSecs">00</div>
-          <div class="countdown-unit-label">ثانية</div>
-        </div>
-      </div>
-    </div>
 
-    <!-- Value stack box -->
-    <div class="offer-box">
-      <div class="offer-box-header">
-        <h2>إليك كل ما ستحصل عليه اليوم</h2>
-        <p>قيمة حقيقية تغير مسار شغلك بالكامل — بسعر استثنائي لفترة محدودة</p>
-      </div>
-
-      <div class="offer-items">
-        <!-- Main product -->
-        <div class="offer-item">
-          <div class="offer-item-left">
-            <div class="offer-icon main">📚</div>
-            <div>
-              <h4>البرنامج التدريبي الشامل — الأطلس</h4>
-              <p>+30 ساعة فيديو تدريبي مسجل بجودة عالية ، مرتب في 8 موديولات عملية.</p>
+        <!-- Countdown -->
+        <div class="countdown-wrap" style="margin-bottom:40px;">
+          <div class="countdown-label">⏳ ينتهي العرض بعد:</div>
+          <div class="countdown-block">
+            <div class="countdown-unit">
+              <div class="countdown-num" id="cdHours">04</div>
+              <div class="countdown-unit-label">ساعة</div>
+            </div>
+            <div class="countdown-sep">:</div>
+            <div class="countdown-unit">
+              <div class="countdown-num" id="cdMins">59</div>
+              <div class="countdown-unit-label">دقيقة</div>
+            </div>
+            <div class="countdown-sep">:</div>
+            <div class="countdown-unit">
+              <div class="countdown-num" id="cdSecs">00</div>
+              <div class="countdown-unit-label">ثانية</div>
             </div>
           </div>
-          <div class="offer-value">$500</div>
         </div>
 
-        <!-- Bonus 1 -->
-        <div class="offer-item">
-          <div class="offer-item-left">
-            <div class="offer-icon bonus">🎁</div>
-            <div>
-              <span class="bonus-tag">هدية مجانية #1</span>
-              <h4>قوالب n8n & Make جاهزة للعمل</h4>
-              <p>انسخ والصق الأنظمة واعرضها على عملائك فوراً — وفر 40 ساعة من البناء.</p>
+        <!-- ══ RAMADAN SPECIAL CARD (Luxury Dark Version) ══ -->
+        <div class="ramadan-card">
+          <div class="offer-tag">
+            <span class="green-dot"></span>
+            عرض رمضان الذهبي
+          </div>
+          <h3>الخصم متاح لأول 100 شخص فقط</h3>
+          <p class="price-sub-desc">السعر لأول 100 مشترك: $49 — وبعدها يرجع السعر الطبيعي.</p>
+
+          <div class="price-main-box">
+            <div class="price-right-side">
+              <span class="label">السعر الحالي</span>
+              <span class="sub-label">بعد اكتمال 100 شخص هيرجع السعر لـ $77</span>
+            </div>
+            <div class="price-amount">$49</div>
+          </div>
+
+          <div class="progress-container">
+            <div class="progress-labels">
+              <span>اتسجل 97 / 100</span>
+              <span>باقي 3</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill"></div>
             </div>
           </div>
-          <div class="offer-value">$200</div>
+
+          <div class="urgency-badge-light">
+            !فاضل كام مكان... العداد قرب يقفل 🔥
+          </div>
+
+          <div class="live-notif">
+            <span class="red-dot-live"></span>
+            <strong style="color:#ef4444;">Live</strong>
+            <span>Hadeel اشترت من 1 دقائق</span>
+          </div>
         </div>
 
-        <!-- Bonus 2 -->
-        <div class="offer-item">
-          <div class="offer-item-left">
-            <div class="offer-icon bonus">📞</div>
-            <div>
-              <span class="bonus-tag">هدية مجانية #2</span>
-              <h4>جروب دعم VIP + مكالمة أسبوعية مباشرة</h4>
-              <p>مش هنسيبك لوحدك — دعم فني وإجابة على أسئلتك أسبوعياً.</p>
-            </div>
+        <!-- Value Stack Box -->
+        <div class="offer-box">
+          <div class="offer-box-header">
+            <h2>إليك كل ما ستحصل عليه اليوم</h2>
+            <p>قيمة حقيقية تغير مسار شغلك بالكامل — بسعر استثنائي لفترة محدودة</p>
           </div>
-          <div class="offer-value">$300</div>
-        </div>
 
-        <!-- Bonus 3 -->
-        <div class="offer-item">
-          <div class="offer-item-left">
-            <div class="offer-icon bonus">📄</div>
-            <div>
-              <span class="bonus-tag">هدية مجانية #3</span>
-              <h4>قوالب بروبوزالات احترافية للعملاء</h4>
-              <p>7 عروض جاهزة لتسعة أنواع شركات — ابعت وانتظر رد "نبدأ إمتى؟".</p>
+          <div class="offer-items">
+            <div class="offer-item">
+              <div class="offer-item-left">
+                <div class="offer-icon main">📚</div>
+                <div>
+                  <h4>البرنامج التدريبي الشامل — الأطلس</h4>
+                  <p>+30 ساعة فيديو تدريبي مسجل بجودة عالية ، مرتب في 8 موديولات عملية.</p>
+                </div>
+              </div>
+              <div class="offer-value">$500</div>
+            </div>
+            <div class="offer-item">
+              <div class="offer-item-left">
+                <div class="offer-icon bonus">🎁</div>
+                <div>
+                  <span class="bonus-tag">هدية مجانية #1</span>
+                  <h4>قوالب n8n & Make جاهزة للعمل</h4>
+                  <p>انسخ والصق الأنظمة واعرضها على عملائك فوراً — وفر 40 ساعة من البناء.</p>
+                </div>
+              </div>
+              <div class="offer-value">$200</div>
+            </div>
+            <div class="offer-item">
+              <div class="offer-item-left">
+                <div class="offer-icon bonus">📞</div>
+                <div>
+                  <span class="bonus-tag">هدية مجانية #2</span>
+                  <h4>جروب دعم VIP + مكالمة أسبوعية مباشرة</h4>
+                  <p>مش هنسيبك لوحدك — دعم فني وإجابة على أسئلتك أسبوعياً.</p>
+                </div>
+              </div>
+              <div class="offer-value">$300</div>
+            </div>
+            <div class="offer-item">
+              <div class="offer-item-left">
+                <div class="offer-icon bonus">📄</div>
+                <div>
+                  <span class="bonus-tag">هدية مجانية #3</span>
+                  <h4>قوالب بروبوزالات احترافية للعملاء</h4>
+                  <p>7 عروض جاهزة لتسعة أنواع شركات — ابعت وانتظر رد "نبدأ إمتى؟".</p>
+                </div>
+              </div>
+              <div class="offer-value">$150</div>
             </div>
           </div>
-          <div class="offer-value">$150</div>
+
+          <div class="offer-footer">
+            <div class="total-value-row">القيمة الإجمالية الكاملة: <span class="strike">$1,150</span></div>
+            <div class="price-today-label">استثمر اليوم فقط بـ</div>
+            <div>
+              <span class="price-currency">EGP</span>
+              <span class="price-big">1,499</span>
+            </div>
+            <div class="price-period">دفع مرة واحدة | وصول مدى الحياة | كل التحديثات المستقبلية</div>
+
+            <a href="#checkout" class="btn-cta" style="width:100%;justify-content:center;margin-bottom:16px;">
+              🔥 احجز مقعدك الآن بالخصم
+            </a>
+
+            <div class="cta-sub-note" style="margin-top:0;">
+              <span class="note-item">🔒 دفع آمن 100%</span>
+              <span class="note-item"><span class="green">✅ ضمان استرداد 7 أيام</span></span>
+            </div>
+
+            <div class="scarcity-note">⏳ السعر سيرتفع للضعف بعد انتهاء العداد</div>
+
+            <div class="slots-bar">
+              <div class="slots-label">
+                <span>المقاعد المتبقية</span>
+                <span style="color:var(--red);font-weight:700;">27 / 100</span>
+              </div>
+              <div class="slots-track">
+                <div class="slots-fill"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+    </section>
 
-      <div class="offer-footer">
-        <div class="total-value-row">القيمة الإجمالية الكاملة: <span class="strike">$1,150</span></div>
-        <div class="price-today-label">استثمر اليوم فقط بـ</div>
-        <div>
-          <span class="price-currency">EGP</span>
-          <span class="price-big">1,499</span>
-        </div>
-        <div class="price-period">دفع مرة واحدة | وصول مدى الحياة | كل التحديثات المستقبلية</div>
-
-        <a href="#checkout" class="btn-cta" style="width:100%; justify-content:center; margin-bottom:16px;">
-          🔥 احجز مقعدك الآن بالخصم
-        </a>
-
-        <div class="cta-sub-note" style="margin-top:0;">
-          <span class="note-item">🔒 دفع آمن 100%</span>
-          <span class="note-item"><span class="green">✅ ضمان استرداد 7 أيام</span></span>
-        </div>
-
-        <div class="scarcity-note">⏳ السعر سيرتفع للضعف بعد انتهاء العداد</div>
-
-        <!-- Slots progress bar -->
-        <div class="slots-bar">
-          <div class="slots-label">
-            <span>المقاعد المتبقية</span>
-            <span style="color:var(--red); font-weight:700;">27 / 100</span>
-          </div>
-          <div class="slots-track">
-            <div class="slots-fill"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<!-- ════════════════════════════════════════
+    <!-- ════════════════════════════════════════
      GUARANTEE
-════════════════════════════════════════ -->
-<section class="guarantee-section">
-  <div class="container">
-    <div class="guarantee-box">
-      <span class="guarantee-badge">🛡️</span>
-      <h3>ضمان استرداد ذهبي 100% — 7 أيام بلا أسئلة</h3>
-      <p>
-        أنا واثق جداً من قوة المحتوى. لو اشتركت وطبقت اللي في الكورس ومحستش إنك أخدت قيمة أضعاف اللي دفعته — ابعتلي رسالة خلال 7 أيام وهردلك فلوسك كاملة. بدون أي أسئلة، بدون أي تعقيد.
-      </p>
-
-      <div class="guarantee-points">
-        <span class="gp"><span class="gp-icon">✅</span> استرداد فوري</span>
-        <span class="gp"><span class="gp-icon">✅</span> لا شروط خفية</span>
-        <span class="gp"><span class="gp-icon">✅</span> لا تحتاج مبرر</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<!-- ════════════════════════════════════════
-     SCREENSHOTS / SOCIAL PROOF
-════════════════════════════════════════ -->
-<section class="screenshots-section">
-  <div class="container">
-    <div class="centered">
-      <span class="section-eyebrow">نتائج بالأرقام</span>
-      <div class="section-divider"></div>
-      <h2 class="section-title">مجتمعنا لا يتوقف عن <span style="color:var(--green)">تحقيق النتائج</span></h2>
-      <p class="section-sub">رسائل من أشخاص عاديين قرروا ياخدوا الخطوة وبدأوا يجنوا الأرباح.</p>
-    </div>
-
-    <div class="screenshots-grid">
-      <div class="screenshot-card">
-        <img src="https://via.placeholder.com/300x560/0e0e1a/10B981?text=WhatsApp+Result+1" alt="نتيجة واتساب 1">
-        <div class="screenshot-overlay"><span class="screenshot-label">أحمد — أول 3000 جنيه 🎉</span></div>
-      </div>
-      <div class="screenshot-card">
-        <img src="https://via.placeholder.com/300x560/0e0e1a/4F46E5?text=WhatsApp+Result+2" alt="نتيجة واتساب 2">
-        <div class="screenshot-overlay"><span class="screenshot-label">مريم — عميل بـ $500/شهر 💰</span></div>
-      </div>
-      <div class="screenshot-card">
-        <img src="https://via.placeholder.com/300x560/0e0e1a/10B981?text=WhatsApp+Result+3" alt="نتيجة واتساب 3">
-        <div class="screenshot-overlay"><span class="screenshot-label">خالد — وفّر 20 ساعة أسبوعياً ⏰</span></div>
-      </div>
-      <div class="screenshot-card">
-        <img src="https://via.placeholder.com/300x560/0e0e1a/4F46E5?text=WhatsApp+Result+4" alt="نتيجة واتساب 4">
-        <div class="screenshot-overlay"><span class="screenshot-label">ياسمين — وكالة بـ 15k/شهر 🚀</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<!-- ════════════════════════════════════════
-     FAQ ACCORDION
-════════════════════════════════════════ -->
-<section class="faq-section" id="faq">
-  <div class="container">
-    <div class="centered">
-      <span class="section-eyebrow">الأسئلة الشائعة</span>
-      <div class="section-divider"></div>
-      <h2 class="section-title">كل اللي عايز تعرفه</h2>
-    </div>
-
-    <div class="faq-list">
-
-      <div class="faq-item">
-        <div class="faq-q">
-          هل أحتاج خبرة سابقة في البرمجة؟
-          <span class="faq-icon">+</span>
-        </div>
-        <div class="faq-a">
-          إطلاقاً. الكورس مصمم من الصفر الحقيقي. الأدوات اللي بنستخدمها زي n8n وMake هي No-Code بتعتمد على السحب والإفلات وتفكيرك المنطقي — مش كتابة أي كود.
+    ════════════════════════════════════════ -->
+    <section class="guarantee-section">
+      <div class="container">
+        <div class="guarantee-box">
+          <span class="guarantee-badge">🛡️</span>
+          <h3>ضمان استرداد ذهبي 100% — 7 أيام بلا أسئلة</h3>
+          <p>أنا واثق جداً من قوة المحتوى. لو اشتركت وطبقت اللي في الكورس ومحستش إنك أخدت قيمة أضعاف اللي دفعته — ابعتلي رسالة خلال 7 أيام وهردلك فلوسك كاملة. بدون أي أسئلة، بدون أي تعقيد.</p>
+          <div class="guarantee-points">
+            <span class="gp"><span class="gp-icon">✅</span> استرداد فوري</span>
+            <span class="gp"><span class="gp-icon">✅</span> لا شروط خفية</span>
+            <span class="gp"><span class="gp-icon">✅</span> لا تحتاج مبرر</span>
+          </div>
         </div>
       </div>
+    </section>
 
-      <div class="faq-item">
-        <div class="faq-q">
-          متى يمكنني بدء جني الأرباح؟
-          <span class="faq-icon">+</span>
+    <!-- ════════════════════════════════════════
+     SCREENSHOTS
+    ════════════════════════════════════════ -->
+    <section class="screenshots-section">
+      <div class="container">
+        <div class="centered">
+          <span class="section-eyebrow">نتائج بالأرقام</span>
+          <div class="section-divider"></div>
+          <h2 class="section-title">مجتمعنا لا يتوقف عن <span style="color:var(--gold)">تحقيق النتائج</span></h2>
+          <p class="section-sub">رسائل من أشخاص عاديين قرروا ياخدوا الخطوة وبدأوا يجنوا الأرباح.</p>
         </div>
-        <div class="faq-a">
-          الأمر يعتمد على مجهودك وتطبيقك. بعض المتدربين حصلوا على أول عميل خلال 14 يوماً من التطبيق الفعلي. النتائج تتفاوت حسب الجهد والسوق اللي بتستهدفه.
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-q">
-          هل الكورس مسجل أم بث مباشر؟
-          <span class="faq-icon">+</span>
-        </div>
-        <div class="faq-a">
-          الكورس مسجل بالكامل بجودة عالية تشاهده في أي وقت وبالسرعة اللي تناسبك. بالإضافة لجروب دعم VIP حي ومكالمات دورية للإجابة على أسئلتك.
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-q">
-          كيف أستلم الكورس بعد الدفع؟
-          <span class="faq-icon">+</span>
-        </div>
-        <div class="faq-a">
-          بمجرد إتمام الدفع بنجاح، سيتم إنشاء حساب لك على المنصة وإرسال بيانات الدخول على إيميلك فوراً — الوصول فوري.
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-q">
-          هل الكورس مناسب لأصحاب الوظائف؟
-          <span class="faq-icon">+</span>
-        </div>
-        <div class="faq-a">
-          نعم. الكورس مصمم بحيث تقدر تكمله في عطلة نهاية الأسبوع أو على مدار أسبوعين في ساعة يومياً. كتير من المتدربين بدأوا وهم بيشتغلوا بالتوازي.
+        <div class="screenshots-grid">
+          <div class="screenshot-card">
+            <img src="https://via.placeholder.com/300x560/080800/D4AF37?text=WhatsApp+Result+1" alt="نتيجة 1" />
+            <div class="screenshot-overlay"><span class="screenshot-label">أحمد — أول 3000 جنيه 🎉</span></div>
+          </div>
+          <div class="screenshot-card">
+            <img src="https://via.placeholder.com/300x560/0a0800/F9D976?text=WhatsApp+Result+2" alt="نتيجة 2" />
+            <div class="screenshot-overlay"><span class="screenshot-label">مريم — عميل بـ $500/شهر 💰</span></div>
+          </div>
+          <div class="screenshot-card">
+            <img src="https://via.placeholder.com/300x560/080800/D4AF37?text=WhatsApp+Result+3" alt="نتيجة 3" />
+            <div class="screenshot-overlay"><span class="screenshot-label">خالد — وفّر 20 ساعة أسبوعياً ⏰</span></div>
+          </div>
+          <div class="screenshot-card">
+            <img src="https://via.placeholder.com/300x560/0a0800/AA8954?text=WhatsApp+Result+4" alt="نتيجة 4" />
+            <div class="screenshot-overlay"><span class="screenshot-label">ياسمين — وكالة بـ 15k/شهر 🚀</span></div>
+          </div>
         </div>
       </div>
+    </section>
 
-      <div class="faq-item">
-        <div class="faq-q">
-          هل يوجد ضمان استرداد الأموال؟
-          <span class="faq-icon">+</span>
+    <!-- ════════════════════════════════════════
+     FAQ
+    ════════════════════════════════════════ -->
+    <section class="faq-section" id="faq">
+      <div class="container">
+        <div class="centered">
+          <span class="section-eyebrow">الأسئلة الشائعة</span>
+          <div class="section-divider"></div>
+          <h2 class="section-title">كل اللي عايز تعرفه</h2>
         </div>
-        <div class="faq-a">
-          أيوه. ضمان استرداد 100% خلال 7 أيام من الشراء — بدون أسئلة وبدون أي تعقيدات. أنا واثق من قيمة المحتوى.
+        <div class="faq-list">
+          <div class="faq-item">
+            <div class="faq-q">هل أحتاج خبرة سابقة في البرمجة؟<span class="faq-icon">+</span></div>
+            <div class="faq-a">إطلاقاً. الكورس مصمم من الصفر الحقيقي. الأدوات اللي بنستخدمها زي n8n وMake هي No-Code بتعتمد على السحب والإفلات وتفكيرك المنطقي — مش كتابة أي كود.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">متى يمكنني بدء جني الأرباح؟<span class="faq-icon">+</span></div>
+            <div class="faq-a">الأمر يعتمد على مجهودك وتطبيقك. بعض المتدربين حصلوا على أول عميل خلال 14 يوماً من التطبيق الفعلي.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">هل الكورس مسجل أم بث مباشر؟<span class="faq-icon">+</span></div>
+            <div class="faq-a">الكورس مسجل بالكامل بجودة عالية تشاهده في أي وقت وبالسرعة اللي تناسبك. بالإضافة لجروب دعم VIP حي ومكالمات دورية للإجابة على أسئلتك.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">كيف أستلم الكورس بعد الدفع؟<span class="faq-icon">+</span></div>
+            <div class="faq-a">بمجرد إتمام الدفع بنجاح، سيتم إنشاء حساب لك على المنصة وإرسال بيانات الدخول على إيميلك فوراً — الوصول فوري.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">هل الكورس مناسب لأصحاب الوظائف؟<span class="faq-icon">+</span></div>
+            <div class="faq-a">نعم. الكورس مصمم بحيث تقدر تكمله في عطلة نهاية الأسبوع أو على مدار أسبوعين في ساعة يومياً.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">هل يوجد ضمان استرداد الأموال؟<span class="faq-icon">+</span></div>
+            <div class="faq-a">أيوه. ضمان استرداد 100% خلال 7 أيام من الشراء — بدون أسئلة وبدون أي تعقيدات.</div>
+          </div>
         </div>
       </div>
+    </section>
 
-    </div>
-  </div>
-</section>
-
-
-<!-- ════════════════════════════════════════
-     FINAL CTA SECTION
-════════════════════════════════════════ -->
-<section class="final-cta-section" id="checkout">
-  <div class="container">
-    <div class="centered">
-      <span class="section-eyebrow">الخطوة الأخيرة</span>
-      <div class="section-divider"></div>
-      <h2 class="section-title" style="max-width:600px;margin-inline:auto;">
-        القرار ده ممكن يكون أهم قرار بتاخده في 2026
-      </h2>
-      <p class="section-sub" style="margin:0 auto 36px;">
-        سوق الـ AI بينمو بشكل تاريخي الآن. اللي يبدأ اليوم يكسب. اللي يتأخر يلاقي المنافسة قوية.
-      </p>
-      <a href="#" class="btn-cta" style="font-size:clamp(1.1rem, 3vw, 1.4rem); padding:20px 52px;">
-        🚀 انضم للأطلس الآن — EGP 1,499 فقط
-      </a>
-      <div class="cta-sub-note" style="margin-top:18px;">
-        <span class="note-item">🔒 دفع آمن</span>
-        <span class="note-item"><span class="green">✅ ضمان 7 أيام</span></span>
-        <span class="note-item">⚡ وصول فوري</span>
-        <span class="note-item">♾️ مدى الحياة</span>
+    <!-- ════════════════════════════════════════
+     FINAL CTA
+    ════════════════════════════════════════ -->
+    <section class="final-cta-section" id="checkout">
+      <div class="container">
+        <div class="centered">
+          <span class="section-eyebrow">الخطوة الأخيرة</span>
+          <div class="section-divider"></div>
+          <h2 class="section-title" style="max-width:600px;margin-inline:auto;">القرار ده ممكن يكون أهم قرار بتاخده في 2026</h2>
+          <p class="section-sub" style="margin:0 auto 36px;">سوق الـ AI بينمو بشكل تاريخي الآن. اللي يبدأ اليوم يكسب. اللي يتأخر يلاقي المنافسة قوية.</p>
+          <a href="#" class="btn-cta" style="font-size:clamp(1.1rem,3vw,1.4rem);padding:20px 52px;">
+            🚀 انضم للأطلس الآن — EGP 1,499 فقط
+          </a>
+          <div class="cta-sub-note" style="margin-top:18px;">
+            <span class="note-item">🔒 دفع آمن</span>
+            <span class="note-item"><span class="green">✅ ضمان 7 أيام</span></span>
+            <span class="note-item">⚡ وصول فوري</span>
+            <span class="note-item">♾️ مدى الحياة</span>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-
-<!-- ════════════════════════════════════════
+    <!-- ════════════════════════════════════════
      FOOTER
-════════════════════════════════════════ -->
-<footer>
-  <div class="container">
-    <div class="footer-logo">AI Automation Atlas</div>
-    <p style="margin-bottom:10px;">© 2026 AI Automation Atlas. جميع الحقوق محفوظة.</p>
-    <p>
-      <a href="#">سياسة الخصوصية</a> &nbsp;|&nbsp;
-      <a href="#">الشروط والأحكام</a> &nbsp;|&nbsp;
-      <a href="#">سياسة الاسترداد</a>
-    </p>
-    <p style="margin-top:12px; font-size:0.72rem; color:var(--muted); max-width:600px; margin-inline:auto;">
-      ⚠️ إخلاء مسؤولية: النتائج المذكورة تعكس تجارب فردية وقد تتفاوت. لا يوجد ضمان بتحقيق نفس النتائج. هذا البرنامج تعليمي بحت.
-    </p>
-  </div>
-</footer>
+    ════════════════════════════════════════ -->
+    <footer>
+      <div class="container">
+        <div class="footer-logo">AI Automation Atlas</div>
+        <p style="margin-bottom:10px;">© 2026 AI Automation Atlas. جميع الحقوق محفوظة.</p>
+        <p>
+          <a href="#">سياسة الخصوصية</a> &nbsp;|&nbsp;
+          <a href="#">الشروط والأحكام</a> &nbsp;|&nbsp;
+          <a href="#">سياسة الاسترداد</a>
+        </p>
+        <p style="margin-top:12px;font-size:0.72rem;color:var(--muted);max-width:600px;margin-inline:auto;">
+          ⚠️ إخلاء مسؤولية: النتائج المذكورة تعكس تجارب فردية وقد تتفاوت. لا يوجد ضمان بتحقيق نفس النتائج. هذا البرنامج تعليمي بحت.
+        </p>
+      </div>
+    </footer>
 
+    <!-- ════════════════════════════════════════
+     STICKY CTA BAR
+    ════════════════════════════════════════ -->
+    <div class="sticky-cta" id="stickyCta">
+      <div class="sticky-left">
+        <strong>خصم 50% — ينتهي قريباً 🔥</strong>
+        <span>EGP 1,499 فقط | ضمان استرداد 7 أيام</span>
+      </div>
+      <a href="#offer" class="btn-cta">احجز الآن ←</a>
+    </div>
 
-<!-- ════════════════════════════════════════
-     STICKY CTA BAR (appears on scroll)
-════════════════════════════════════════ -->
-<div class="sticky-cta" id="stickyCta">
-  <div class="sticky-left">
-    <strong>خصم 50% — ينتهي قريباً 🔥</strong>
-    <span>EGP 1,499 فقط | ضمان استرداد 7 أيام</span>
-  </div>
-  <a href="#offer" class="btn-cta">
-    احجز الآن ←
-  </a>
-</div>
-
-
-<!-- ════════════════════════════════════════
+    <!-- ════════════════════════════════════════
      JAVASCRIPT
-════════════════════════════════════════ -->
-<script>
-  /* ──────────────────────────────────────
-     1. VSL Video Activation
-  ────────────────────────────────────── */
-  function activateVSL() {
-    const cover  = document.getElementById('vslCover');
-    const iframe = document.getElementById('vslIframe');
-    if (cover && iframe) {
-      cover.style.display = 'none';
-      iframe.style.display = 'block';
-      iframe.src = iframe.getAttribute('data-src');
-    }
-  }
-
-  /* ──────────────────────────────────────
-     2. Countdown Timer
-     Persists across reloads via localStorage
-  ────────────────────────────────────── */
-  function initCountdown() {
-    const DURATION_SECONDS = 5 * 60 * 60; // 5 hours
-    const STORAGE_KEY = 'atlas_timer_end';
-
-    let endTime = localStorage.getItem(STORAGE_KEY);
-    if (!endTime) {
-      endTime = Date.now() + DURATION_SECONDS * 1000;
-      localStorage.setItem(STORAGE_KEY, endTime);
-    } else {
-      endTime = parseInt(endTime);
-      // If already expired, reset
-      if (Date.now() >= endTime) {
-        endTime = Date.now() + DURATION_SECONDS * 1000;
-        localStorage.setItem(STORAGE_KEY, endTime);
+    ════════════════════════════════════════ -->
+    <script>
+      /* VSL Activation */
+      function activateVSL() {
+        const cover = document.getElementById("vslCover");
+        const iframe = document.getElementById("vslIframe");
+        if (cover && iframe) {
+          cover.style.display = "none";
+          iframe.style.display = "block";
+          iframe.src = iframe.getAttribute("data-src");
+        }
       }
-    }
 
-    function updateDisplays(h, m, s) {
-      const pad = n => String(n).padStart(2, '0');
+      /* Countdown Timer */
+      function initCountdown() {
+        const DURATION_SECONDS = 5 * 60 * 60;
+        const STORAGE_KEY = "atlas_timer_end_v2";
+        let endTime = localStorage.getItem(STORAGE_KEY);
+        if (!endTime) {
+          endTime = Date.now() + DURATION_SECONDS * 1000;
+          localStorage.setItem(STORAGE_KEY, endTime);
+        } else {
+          endTime = parseInt(endTime);
+          if (Date.now() >= endTime) {
+            endTime = Date.now() + DURATION_SECONDS * 1000;
+            localStorage.setItem(STORAGE_KEY, endTime);
+          }
+        }
 
-      // Top bar timer
-      const topTimer = document.getElementById('topTimer');
-      if (topTimer) topTimer.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+        function updateDisplays(h, m, s) {
+          const pad = (n) => String(n).padStart(2, "0");
+          const topTimer = document.getElementById("topTimer");
+          if (topTimer) topTimer.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+          const cdH = document.getElementById("cdHours");
+          const cdM = document.getElementById("cdMins");
+          const cdS = document.getElementById("cdSecs");
+          if (cdH) cdH.textContent = pad(h);
+          if (cdM) cdM.textContent = pad(m);
+          if (cdS) cdS.textContent = pad(s);
+        }
 
-      // Main countdown blocks
-      const cdH = document.getElementById('cdHours');
-      const cdM = document.getElementById('cdMins');
-      const cdS = document.getElementById('cdSecs');
-      if (cdH) cdH.textContent = pad(h);
-      if (cdM) cdM.textContent = pad(m);
-      if (cdS) cdS.textContent = pad(s);
-    }
-
-    const interval = setInterval(() => {
-      const remaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
-      const h = Math.floor(remaining / 3600);
-      const m = Math.floor((remaining % 3600) / 60);
-      const s = remaining % 60;
-      updateDisplays(h, m, s);
-      if (remaining <= 0) clearInterval(interval);
-    }, 1000);
-  }
-
-  /* ──────────────────────────────────────
-     3. FAQ Accordion
-  ────────────────────────────────────── */
-  document.querySelectorAll('.faq-q').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const item   = btn.parentElement;
-      const isOpen = item.classList.contains('open');
-
-      // Close all
-      document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('open'));
-
-      // Open clicked if was closed
-      if (!isOpen) item.classList.add('open');
-    });
-  });
-
-  /* ──────────────────────────────────────
-     4. Sticky CTA Bar (show on scroll)
-  ────────────────────────────────────── */
-  const stickyBar = document.getElementById('stickyCta');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 480) {
-      stickyBar.classList.add('show');
-    } else {
-      stickyBar.classList.remove('show');
-    }
-  }, { passive: true });
-
-  /* ──────────────────────────────────────
-     5. Intersection Observer — fade-in sections
-  ────────────────────────────────────── */
-  const observerOptions = { threshold: 0.12 };
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
-        observer.unobserve(entry.target);
+        const interval = setInterval(() => {
+          const remaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+          const h = Math.floor(remaining / 3600);
+          const m = Math.floor((remaining % 3600) / 60);
+          const s = remaining % 60;
+          updateDisplays(h, m, s);
+          if (remaining <= 0) clearInterval(interval);
+        }, 1000);
       }
-    });
-  }, observerOptions);
 
-  // Apply to chapter cards and review cards
-  document.querySelectorAll('.chapter-card, .text-review-card, .screenshot-card').forEach((el, i) => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(24px)';
-    el.style.transition = `opacity 0.55s ease ${i * 0.07}s, transform 0.55s ease ${i * 0.07}s`;
-    observer.observe(el);
-  });
+      /* FAQ Accordion */
+      document.querySelectorAll(".faq-q").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const item = btn.parentElement;
+          const isOpen = item.classList.contains("open");
+          document.querySelectorAll(".faq-item").forEach((el) => el.classList.remove("open"));
+          if (!isOpen) item.classList.add("open");
+        });
+      });
 
-  /* ──────────────────────────────────────
-     6. Init all on load
-  ────────────────────────────────────── */
-  window.addEventListener('DOMContentLoaded', () => {
-    initCountdown();
-  });
-</script>
+      /* Sticky CTA */
+      const stickyBar = document.getElementById("stickyCta");
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 480) stickyBar.classList.add("show");
+        else stickyBar.classList.remove("show");
+      }, { passive: true });
 
-</body>
+      /* Intersection Observer — fade-in */
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = "1";
+            entry.target.style.transform = "translateY(0)";
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+
+      document.querySelectorAll(".chapter-card, .text-review-card, .screenshot-card").forEach((el, i) => {
+        el.style.opacity = "0";
+        el.style.transform = "translateY(24px)";
+        el.style.transition = `opacity 0.55s ease ${i * 0.07}s, transform 0.55s ease ${i * 0.07}s`;
+        observer.observe(el);
+      });
+
+      /* Init */
+      window.addEventListener("DOMContentLoaded", () => {
+        initCountdown();
+      });
+    </script>
+  </body>
 </html>
